@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--db', default='cafef')
+    parser.add_argument('--db', default='articles')
     # parser.add_argument('--topic', default='kinh-doanh')
     args = parser.parse_args()
     return args

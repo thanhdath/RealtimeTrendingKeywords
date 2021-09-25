@@ -27,12 +27,22 @@ services:
       - mongo_net
   selenium:
     image: selenium/standalone-chrome:94.0
+    container_name: selenium
+    shm_size: 2gb
     ports:
+      - 4442:4442
+      - 4443:4443
       - 4444:4444
       - 7900:7900
     networks:
       - mongo_net
-      - host
+  crawler:
+    build: crawler/
+    container_name: crawler
+    volumes:
+    - ./crawler:/code
+    networks:
+      - mongo_net
 #  my-mongoclient:
 #    # build will get tagged with 'image'
 #    build: ./my-mongoclient

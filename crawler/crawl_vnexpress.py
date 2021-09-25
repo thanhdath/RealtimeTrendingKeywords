@@ -164,7 +164,8 @@ if __name__ == '__main__':
     DATABASE_USERNAME = "admin"
     DATABASE_PASSWORD = "admin"
 
-    mongodb = MongoClient()
+    # mongodb = MongoClient()
+    mongodb = MongoClient(host="mongodb")
     mongodb.admin.authenticate( DATABASE_USERNAME , DATABASE_PASSWORD )
 
     articles_db = mongodb['article_db']
@@ -193,10 +194,11 @@ if __name__ == '__main__':
     chrome_options = webdriver.ChromeOptions()
     prefs = {"profile.managed_default_content_settings.images": 2}
     chrome_options.add_experimental_option("prefs", prefs)
-    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
 
-    driver = webdriver.Remote("http://localhost:4444/wd/hub",options=chrome_options)
+    # driver = webdriver.Remote("http://localhost:4444/wd/hub",options=chrome_options)
+    driver = webdriver.Remote("http://selenium:4444/wd/hub",options=chrome_options)
 
     topic = args.topic
 
