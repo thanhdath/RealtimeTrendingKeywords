@@ -5,6 +5,7 @@ import re
 import argparse
 import selenium
 import time
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -169,6 +170,11 @@ if __name__ == '__main__':
     articles_db = mongodb['article_db']
     db = articles_db['articles']
 
+
+    ########################################################
+    ###### Selenium in machine
+    ########################################################
+    """
     chrome_options = webdriver.ChromeOptions()
     chrome_options.binary_location = r"C:\Program Files (x86)\Google\Chrome Beta\Application\chrome.exe"
 
@@ -180,6 +186,17 @@ if __name__ == '__main__':
         executable_path='../chromedriver.exe',
         chrome_options=chrome_options
     )
+    """
+    ########################################################
+    ###### Selenium in docker
+    ########################################################
+    chrome_options = webdriver.ChromeOptions()
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    chrome_options.add_experimental_option("prefs", prefs)
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+
+    driver = webdriver.Remote("http://localhost:4444/wd/hub",options=chrome_options)
 
     topic = args.topic
 

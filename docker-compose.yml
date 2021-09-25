@@ -25,7 +25,14 @@ services:
       - mongoconfig:/data/configdb
     networks:
       - mongo_net
-
+  selenium:
+    image: selenium/standalone-chrome:94.0
+    ports:
+      - 4444:4444
+      - 7900:7900
+    networks:
+      - mongo_net
+      - host
 #  my-mongoclient:
 #    # build will get tagged with 'image'
 #    build: ./my-mongoclient
