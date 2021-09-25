@@ -40,8 +40,11 @@ def convert_all_articles_to_text():
 if __name__ == '__main__':
     args = parse_args()
     print(args)
-
+    DATABASE_USERNAME = "admin"
+    DATABASE_PASSWORD = "admin"
     mongodb = MongoClient()
+    mongodb.admin.authenticate( DATABASE_USERNAME , DATABASE_PASSWORD )
+
     articles_db = mongodb['article_db']
     db = articles_db[args.db]
 
