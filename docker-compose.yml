@@ -30,8 +30,6 @@ services:
     container_name: selenium
     shm_size: 2gb
     ports:
-      - 4442:4442
-      - 4443:4443
       - 4444:4444
       - 7900:7900
     networks:
@@ -41,8 +39,46 @@ services:
     container_name: crawler
     volumes:
     - ./crawler:/code
+    command: python crawl_vnexpress.py
     networks:
       - mongo_net
+  zookeeper:
+    image: zookeeper:3.7
+    container_name: zookeeper
+    hostname: zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - ./data/zookeeper/data:/data
+      - ./data/zookeeper/datalog:/datalog
+    networks:
+      - mongo_net
+  kafka:
+    image: confluentinc/cp-kafka:6.2.1
+    container_name: kafka
+    hostname: kafka
+    ports:
+      - 9092:9092
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,CONNECTIONS_FROM_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - zookeeper
+    networks:
+      - mongo_net
+
 #  my-mongoclient:
 #    # build will get tagged with 'image'
 #    build: ./my-mongoclient
@@ -66,3 +102,5 @@ volumes:
 networks:
   mongo_net:
     driver: bridge
+
+# https://github.com/rmoff/kafka-listeners/blob/master/docker-compose.yml

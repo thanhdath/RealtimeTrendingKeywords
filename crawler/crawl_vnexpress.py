@@ -150,11 +150,13 @@ def crawl_article(driver: webdriver.Chrome, url: str):
 def crawl_newest_articles(driver, max_look_back=3):
 
     while True:
-        all_newest_urls = crawl_newest_article_urls(driver, max_look_back)
-        
-        for url in all_newest_urls:
-            crawl_article(driver, url)
+        try:
+            all_newest_urls = crawl_newest_article_urls(driver, max_look_back)
 
+            for url in all_newest_urls:
+                crawl_article(driver, url)
+        except:
+            continue
         time.sleep(TIME_TO_REFRESH)
 
 
