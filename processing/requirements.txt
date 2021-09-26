@@ -40,4 +40,4 @@ urllib3==1.26.7
 wincertstore==0.2
 yake==0.4.8
 zipp==3.5.0
-confluent_kafka==1.7.0
+pika==1.2.0
