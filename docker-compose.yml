@@ -1,0 +1,184 @@
+version: '3.6'
+# Deploys MongoDB with customization scripts and container with Mongo client
+# https://fabianlee.org/2018/05/20/docker-using-docker-compose-to-link-a-mongodb-server-and-client/
+#
+# usage:
+# sudo docker-compose build
+# sudo docker-compose up
+
+
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=test
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      # seeding scripts
+#      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      # named volumes
+      - mongodb:/data/db
+      - mongoconfig:/data/configdb
+    networks:
+      - mongo_net
+  selenium:
+    image: selenium/standalone-chrome:94.0
+    container_name: selenium
+    shm_size: 2gb
+    ports:
+      - 4444:4444
+      - 7900:7900
+    networks:
+      - mongo_net
+  crawler:
+    build: crawler/
+    container_name: crawler
+    volumes:
+      - ./crawler:/code
+    command: python crawl_vnexpress.py
+    networks:
+      - mongo_net
+    depends_on:
+      - selenium
+      - mongodb
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    hostname: rabbitmq
+    environment:
+      - SPARK_MASTER=spark://master:7077
+      - MASTER=spark://master:7077
+    ports:
+      - 15672:15672
+      - 5672:5672
+    restart: "always"
+    networks:
+      - mongo_net
+#  hadoopnamenode:
+#    image: bde2020/hadoop-namenode:2.0.0-hadoop3.1.1-java8
+#    container_name: hadoopnamenode
+#    volumes:
+#      - ./data/namenode:/hadoop/dfs/name
+#    environment:
+#      - CLUSTER_NAME=test
+#      - CORE_CONF_fs_defaultFS=hdfs://hadoopnamenode:8020
+#    healthcheck:
+#      interval: 5s
+#      retries: 100
+#    networks:
+#      - mongo_net
+#  hadoopdatanode:
+#    image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8
+#    container_name: hadoopdatanode
+#    volumes:
+#      - ./data/datanode:/hadoop/dfs/data
+#    environment:
+#      - CORE_CONF_fs_defaultFS=hdfs://hadoopnamenode:8020
+#    depends_on:
+#      hadoopnamenode:
+#        condition: service_healthy
+#    healthcheck:
+#      interval: 5s
+#      retries: 100
+#    networks:
+#      - mongo_net
+  sparkmaster:
+    image: bde2020/spark-master:2.3.2-hadoop3.1.1-java8
+    container_name: sparkmaster
+    ports:
+      - 8080:8080
+      - 7077:7077
+    expose:
+      - 7077
+#    environment:
+#      - CORE_CONF_fs_defaultFS=hdfs://hadoopnamenode:8020
+#    depends_on:
+#      hadoopnamenode:
+#        condition: service_started
+#      hadoopdatanode:
+#        condition: service_started
+    networks:
+      - mongo_net
+
+  zeppelin:
+    container_name: zeppelin
+    image: apache/zeppelin:0.9.0
+    hostname: worker_01
+    ports:
+      - 18081:8081
+      - 8090:8090
+    environment:
+      - ZEPPELIN_PORT=8090
+      - SPARK_MASTER=spark://sparkmaster:7077
+      - MASTER=spark://sparkmaster:7077
+#      - CORE_CONF_fs_defaultFS=hdfs://hadoopnamenode:8020
+
+    volumes:
+      - ./data/notebook:/opt/zeppelin/notebook
+    networks:
+      - mongo_net
+
+
+#  sparkworker:
+#    image: bde2020/spark-worker:3.1.1-hadoop3.2-java11
+#    container_name: sparkworker
+#    environment:
+#      - SPARK_MASTER=spark://sparkmaster:7077
+#      - CORE_CONF_fs_defaultFS=hdfs://hadoopnamenode:8020
+#    ports:
+#      - 18082:8081
+#    depends_on:
+#      sparkmaster:
+#        condition: service_started
+#    healthcheck:
+#      interval: 5s
+#      retries: 100
+#    networks:
+#      - mongo_net
+
+
+
+#  zeppelin:
+#    image:  apache/zeppelin:0.9.0
+#    container_name: zeppelin
+#    ports:
+#      - 8090:8090
+#    volumes:
+#      - ./data/notebook:/opt/zeppelin/notebook
+#    environment:
+#      ZEPPELIN_PORT: 8090
+#      ZEPPELIN_JAVA_OPTS: >-
+#        -Dspark.driver.memory=1g
+#        -Dspark.executor.memory=2g
+#      CORE_CONF_fs_defaultFS: hdfs://hadoopnamenode:8020
+#      SPARK_MASTER: spark://sparkmaster:7077
+#      MASTER: spark://sparkmaster:7077
+#      SPARK_HOME: /opt/spark
+#
+#      #SPARK_SUBMIT_OPTIONS: "--jars /opt/sansa-examples/jars/sansa-examples-spark-2016-12.jar"
+#    depends_on:
+#      sparkmaster:
+#        condition: service_started
+#      hadoopnamenode:
+#        condition: service_started
+#    healthcheck:
+#      interval: 5s
+#      retries: 100
+#    networks:
+#      - mongo_net
+
+
+volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  mongodb:
+  mongoconfig:
+
+networks:
+  mongo_net:
+    driver: bridge
+
+# https://github.com/big-data-europe/docker-zeppelin/blob/master/docker-compose.yml

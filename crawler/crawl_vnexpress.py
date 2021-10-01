@@ -5,6 +5,7 @@ import re
 import argparse
 import selenium
 import time
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -53,7 +54,7 @@ def crawl_newest_article_urls(driver, max_look_back=3):
                 'n_comments': 0
             }
             db.insert_one(data)
-        
+            print(data)
         # if n_found urls == len(item_news) -> no new items -> last page -> break
         if len(old_page_urls) > 0 and len(new_page_urls.intersection(old_page_urls)) == len(new_page_urls):
             print('All items in pages have been crawler => last page => break')
@@ -140,6 +141,7 @@ def crawl_article(driver: webdriver.Chrome, url: str):
     }
 
     article_record = db.find_one({'url': url})
+    print(article_record)
     if article_record is None:
         db.insert_one(data)
     else:
@@ -148,31 +150,57 @@ def crawl_article(driver: webdriver.Chrome, url: str):
 def crawl_newest_articles(driver, max_look_back=3):
 
     while True:
-        all_newest_urls = crawl_newest_article_urls(driver, max_look_back)
-        
-        for url in all_newest_urls:
-            crawl_article(driver, url)
+        try:
+            all_newest_urls = crawl_newest_article_urls(driver, max_look_back)
 
+            for url in all_newest_urls:
+                crawl_article(driver, url)
+        except:
+            continue
         time.sleep(TIME_TO_REFRESH)
 
 
 if __name__ == '__main__':
     args = parse_args()
     print(args)
+    DATABASE_USERNAME = "admin"
+    DATABASE_PASSWORD = "admin"
 
-    mongodb = MongoClient()
+    # mongodb = MongoClient()
+    mongodb = MongoClient(host="mongodb")
+    mongodb.admin.authenticate( DATABASE_USERNAME , DATABASE_PASSWORD )
+
     articles_db = mongodb['article_db']
     db = articles_db['articles']
 
+
+    ########################################################
+    ###### Selenium in machine
+    ########################################################
+    """
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.binary_location = r"C:\Program Files (x86)\Google\Chrome Beta\Application\chrome.exe"
+
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    chrome_options.add_experimental_option("prefs", prefs)
+    # chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(
+        executable_path='../chromedriver.exe',
+        chrome_options=chrome_options
+    )
+    """
+    ########################################################
+    ###### Selenium in docker
+    ########################################################
     chrome_options = webdriver.ChromeOptions()
     prefs = {"profile.managed_default_content_settings.images": 2}
     chrome_options.add_experimental_option("prefs", prefs)
     # chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
-    driver = webdriver.Chrome(
-        executable_path='./chromedriver.exe',
-        chrome_options=chrome_options
-    )
+
+    # driver = webdriver.Remote("http://localhost:4444/wd/hub",options=chrome_options)
+    driver = webdriver.Remote("http://selenium:4444/wd/hub",options=chrome_options)
 
     topic = args.topic
 

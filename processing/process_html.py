@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--db', default='cafef')
+    parser.add_argument('--db', default='articles')
     # parser.add_argument('--topic', default='kinh-doanh')
     args = parser.parse_args()
     return args
@@ -40,8 +40,11 @@ def convert_all_articles_to_text():
 if __name__ == '__main__':
     args = parse_args()
     print(args)
-
+    DATABASE_USERNAME = "admin"
+    DATABASE_PASSWORD = "admin"
     mongodb = MongoClient()
+    mongodb.admin.authenticate( DATABASE_USERNAME , DATABASE_PASSWORD )
+
     articles_db = mongodb['article_db']
     db = articles_db[args.db]
 
