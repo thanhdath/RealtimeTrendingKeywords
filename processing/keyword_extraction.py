@@ -5,15 +5,27 @@ import time
 
 STOPWORDS = open('data/Stopwords/stopwords_vi_without.txt', encoding='utf8').read().splitlines()
  
+# KW_EXTRACTOR = yake.KeywordExtractor(
+#     lan='vi', 
+#     n=3,
+#     dedupLim=0.9,
+#     dedupFunc='jaro',
+#     windowsSize=1,
+#     top=20,
+#     stopwords=STOPWORDS
+# )
+
 KW_EXTRACTOR = yake.KeywordExtractor(
     lan='vi', 
-    n=3,
-    dedupLim=0.9,
-    dedupFunc='jaro',
+    n=4,
+    dedupLim=0.5,
+    dedupFunc='seqm',
     windowsSize=1,
     top=20,
-    stopwords=STOPWORDS
+    stopwords=STOPWORDS,
+    features=None
 )
+
 
 BATCH_SIZE = 32
 
@@ -34,9 +46,10 @@ def auto_extract_keywords():
         # find articles that hasn't extract keywords
         articles = articles_db['articles'].find({
             'keywords_extracted': False
-        }).limit(BATCH_SIZE)
+        }).sort('published_timestamp', -1).limit(BATCH_SIZE)  # TODO: sort by timestamp
 
         for article in articles:
+            if 'content_html' not in article: continue
             html = article['content_html']
             text = html2text(html)
             keywords_with_scores = extract_keywords(text)
