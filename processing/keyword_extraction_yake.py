@@ -1,31 +1,40 @@
-from collections import Counter
-from utils import *
+import yake
 from pymongo import MongoClient
 from process_html import html2text
 import time
-import json
 
-THRESHOLD_TFIDF_SCORE = 0.5
-IDF = json.load(open("data/idf.json"))
-MAX_IDF = max(IDF.values())
+STOPWORDS = open('data/Stopwords/stopwords_vi_without.txt', encoding='utf8').read().splitlines()
+ 
+# KW_EXTRACTOR = yake.KeywordExtractor(
+#     lan='vi', 
+#     n=3,
+#     dedupLim=0.9,
+#     dedupFunc='jaro',
+#     windowsSize=1,
+#     top=20,
+#     stopwords=STOPWORDS
+# )
 
-def extract_keywords(text, n=10):
-    tfs = compute_tf(text)
-    tfidfs = {}
-    for word, tf in tfs.items():
-        if word in stopwords or is_number(word): 
-            continue 
-        tfidf = tf*IDF.get(word, MAX_IDF)
-        tfidfs[word] = tfidf
-    sorted_keywords = sorted(tfidfs.items(), key=lambda x: x[1], reverse=True)
-    sorted_keywords = sorted_keywords[:n]
-    sorted_keywords = [(x[0].replace("_", " "), x[1]) for x in sorted_keywords]
-    return sorted_keywords
+KW_EXTRACTOR = yake.KeywordExtractor(
+    lan='vi', 
+    n=4,
+    dedupLim=0.5,
+    dedupFunc='seqm',
+    windowsSize=1,
+    top=20,
+    stopwords=STOPWORDS,
+    features=None
+)
 
 
 BATCH_SIZE = 32
 
 ARTICLE_LIST = ['vnexpress']
+ 
+def extract_keywords(text):
+    keywords = KW_EXTRACTOR.extract_keywords(text)
+    # ranked keywords, lower the score better the keyword.
+    return keywords
 
 def auto_extract_keywords():
     mongodb = MongoClient()
@@ -36,7 +45,7 @@ def auto_extract_keywords():
 
         # find articles that hasn't extract keywords
         articles = articles_db['articles'].find({
-            # 'keywords_extracted': False
+            'keywords_extracted': False
         }).sort('published_timestamp', -1).limit(BATCH_SIZE)  # TODO: sort by timestamp
 
         for article in articles:

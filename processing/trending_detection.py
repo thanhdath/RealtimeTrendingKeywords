@@ -74,7 +74,7 @@ def auto_extract_trending():
     while True:
         stime = time.time()
 
-        today = date.today()
+        today = date.today() - timedelta(days=2)
         for article_source in ARTICLE_LIST:
             trending_keywords = extract_trending_score(
                 mongodb,
