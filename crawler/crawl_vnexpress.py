@@ -6,6 +6,7 @@ import argparse
 import selenium
 import time
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import datetime
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -16,6 +17,9 @@ def parse_args():
 SOURCE = 'vnexpress'
 URL = "http://vnexpress.net"
 TIME_TO_REFRESH = 60
+
+def convert_string_to_local_timestamp(str_datetime):
+    return time.mktime(datetime.datetime.strptime(str_datetime, "%Y-%m-%d %H:%M:%S").timetuple())
 
 def crawl_newest_article_urls(driver, max_look_back=3):
     old_page_urls = set()
@@ -47,14 +51,27 @@ def crawl_newest_article_urls(driver, max_look_back=3):
 
             title = title_elm.get_attribute('title')
 
+            # get published datetime
+            published_timestamp = None
+            published_time = None
+            try:
+                published_time = item_new.find_element_by_css_selector('.time-count > span')
+                published_time = published_time.get_attribute('datetime')
+                published_timestamp = convert_string_to_local_timestamp(published_time)
+            except Exception as err:
+                print('Error get pusblished time', err)
+                continue
+
             data = {
                 'topic': topic,
                 'title': title,
                 'url': url,
-                'n_comments': 0
+                'n_comments': 0,
+                'published_time': published_time,
+                'published_timestamp': published_timestamp
             }
             db.insert_one(data)
-            print(data)
+            # print(data)
         # if n_found urls == len(item_news) -> no new items -> last page -> break
         if len(old_page_urls) > 0 and len(new_page_urls.intersection(old_page_urls)) == len(new_page_urls):
             print('All items in pages have been crawler => last page => break')
@@ -203,6 +220,10 @@ if __name__ == '__main__':
     driver = webdriver.Remote("http://selenium:4444/wd/hub",options=chrome_options)
 
     topic = args.topic
+
+    # create index for fast query
+    db.create_index([('published_timestamp', 1)])
+    db.create_index([('keywords_extracted', 1)])
 
     print(f"Crawl topic {topic}")
     crawl_newest_articles(driver, max_look_back=3)
