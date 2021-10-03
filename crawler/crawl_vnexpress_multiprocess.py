@@ -6,11 +6,17 @@ import argparse
 import time
 import datetime
 from multiprocessing import Pool
+import selenium
+
+CHROME_DRIVER_PATH = './chromedriver.exe'
+URL = "http://vnexpress.net"
+INTERVAL_CHECK_NEW_ARTICLES = 60
 
 def parse_args():
     parser = argparse.ArgumentParser()
     # parser.add_argument('--topic', default='kinh-doanh')
     parser.add_argument('--workers', default=4, type=int)
+    parser.add_argument('--n-page-lookback', default=3, type=int)
     args = parser.parse_args()
     return args
 
@@ -30,7 +36,7 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         driver.get(url)
     except selenium.common.exceptions.TimeoutException as err:
         print(err)
-        time.sleep(10)
+        time.sleep(5)
     # time.sleep(.5)
 
     try:
@@ -68,23 +74,6 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         print('Error get pusblished time', err)
         # return
 
-    # for i in range(5):
-    #     tag_elms = driver.find_elements_by_css_selector('.tags .item-tag a')
-    #     # print(len(tag_elms))
-    #     if len(tag_elms) > 0:
-    #         break
-    #     else:
-    #         time.sleep(1)
-    # try:
-    #     tags = [x.get_attribute('innerHTML') for x in tag_elms]
-    # except selenium.common.exceptions.StaleElementReferenceException as err:
-    #     time.sleep(0.5)
-    #     try:
-    #         tags = [x.get_attribute('innerHTML') for x in tag_elms]
-    #     except:
-    #         tags = []
-    #         print('error tags')
-
     # get topics
     try:
         topic_elms = driver.find_elements_by_css_selector('.breadcrumb > li')
@@ -115,19 +104,64 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
     }
 
     article_record = db.find_one({'url': url})
-    print(article_record)
+    # print(article_record)
     if article_record is None:
         db.insert_one(data)
     else:
         db.update({'url': url}, {'$set': data})
 
-def crawl_urls(db, driver, topic):
-    # import pdb; pdb.set_trace()
-    articles = db.find({'topic': topic, 'crawled': {'$ne': True}})
-    for article in tqdm(articles, desc="Crawling articles"):
-        url = article['url']
-        if 'content_html' not in article:
-            crawl_article(db, driver, url)
+def crawl_newest_urls(db, driver, topic, max_page=4, threshold_exists_url=8):
+    n_exists_url = 0
+    all_newest_urls = set()
+
+    for page in tqdm(range(1, max_page), desc="Crawling"):
+        request_url = f"{URL}/{topic}-p{page}"
+        driver.get(request_url)
+        time.sleep(0.5)
+
+        # crawl article urls
+        item_news = driver.find_elements_by_css_selector('.item-news')
+
+        for item_new in item_news:
+            try:
+                title_elm = item_new.find_element_by_css_selector('.title-news > a')
+            except Exception as err:
+                print('Error title', err)
+                continue
+        
+            url = title_elm.get_attribute('href')
+            if not re.match(r"https://vnexpress\.net/.+", url):
+                continue
+
+            record = db.find_one({'url': url})
+            if record is not None:
+                n_exists_url += 1
+                if n_exists_url > threshold_exists_url:
+                    break
+                continue
+            else:
+                all_newest_urls.add(url)
+
+            # title = title_elm.get_attribute('title')
+
+            # data = {
+            #     'topic': topic,
+            #     'title': title,
+            #     'url': url,
+            #     # 'n_comments': n_comments,
+            #     # 'published_time': published_time,
+            #     # 'published_timestamp': published_timestamp
+            # }
+        
+        if n_exists_url > threshold_exists_url:
+            break
+    return all_newest_urls
+
+def crawl_newest_articles(db, driver, topic, max_page=4, threshold_exists_url=8):
+    new_urls = crawl_newest_urls(db, driver, topic, max_page=max_page, threshold_exists_url=threshold_exists_url)
+
+    for url in new_urls:
+        crawl_article(db, driver, url)
 
 def load_topics():
     topics = open('url/vnexpress_topics.txt').read().split('\n')
@@ -140,6 +174,8 @@ def crawl_multiple_topics(topic_list):
     articles_db = mongodb['articles']
     db = articles_db['vnexpress']
     db.create_index([('crawled', 1)])
+    db.create_index([('url', 1)])
+    db.create_index([('topic', 1)])
 
     chrome_options = webdriver.ChromeOptions()
     prefs = {"profile.managed_default_content_settings.images": 2}
@@ -147,12 +183,16 @@ def crawl_multiple_topics(topic_list):
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     driver = webdriver.Chrome(
-        executable_path='./chromedriver',
+        executable_path=CHROME_DRIVER_PATH,
         chrome_options=chrome_options
     )
 
-    for topic in topic_list:
-        crawl_urls(db, driver, topic)
+    while True:
+        for topic in topic_list:
+            crawl_newest_articles(db, driver, topic)
+
+        print(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
+        time.sleep(INTERVAL_CHECK_NEW_ARTICLES)
 
     driver.close()
 
@@ -161,14 +201,19 @@ def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
+def realtime_crawl_articles(args):
+    topics = load_topics()
+    divided_topics = chunks(topics, len(topics)//args.workers)
+
+    pool = Pool(args.workers)
+    pool.map(crawl_multiple_topics, divided_topics)
+    pool.close()
+
+
 if __name__ == '__main__':
     args = parse_args()
     print(args)
 
-    topics = load_topics()
-
-    divided_topics = chunks(topics, len(topics)//args.workers)
-    pool = Pool(args.workers)
-    pool.map(crawl_multiple_topics, divided_topics)
-    pool.close()
+    realtime_crawl_articles(args)
+    
 
