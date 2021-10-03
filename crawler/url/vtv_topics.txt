@@ -1,0 +1,10 @@
+chinh-tri,180
+xa-hoi,181
+phap-luat,179
+the-gioi,122
+kinh-te,90
+truyen-hinh,88
+van-hoa-giai-tri,87
+doi-song,132
+cong-nghe,109
+giao-duc,166
