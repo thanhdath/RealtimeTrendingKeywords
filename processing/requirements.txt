@@ -41,3 +41,4 @@ wincertstore==0.2
 yake==0.4.8
 zipp==3.5.0
 pika==1.2.0
+elasticsearch==7.15.0
