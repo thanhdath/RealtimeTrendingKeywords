@@ -89,7 +89,7 @@ def crawl_article(driver: webdriver.Chrome, url: str):
     except selenium.common.exceptions.TimeoutException as err:
         print(err)
         time.sleep(10)
-    # time.sleep(2)
+    # time.sleep(.5)
 
     try:
         title_elm = driver.find_element_by_css_selector('.title-detail')
