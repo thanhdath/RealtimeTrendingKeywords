@@ -25,7 +25,7 @@ def extract_keywords(text, n=10):
 
 BATCH_SIZE = 32
 
-ARTICLE_LIST = ['vnexpress']
+ARTICLE_LIST = ['vnexpress', 'cafef']
 
 def auto_extract_keywords():
     mongodb = MongoClient()

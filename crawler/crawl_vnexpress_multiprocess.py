@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # parser.add_argument('--topic', default='kinh-doanh')
     parser.add_argument('--workers', default=4, type=int)
-    parser.add_argument('--n-page-lookback', default=3, type=int)
+    parser.add_argument('--n-page-lookback', default=20, type=int)
     args = parser.parse_args()
     return args
 
@@ -171,8 +171,8 @@ def load_topics():
 def crawl_multiple_topics(topic_list):
     print(topic_list)
     mongodb = MongoClient()
-    articles_db = mongodb['articles']
-    db = articles_db['vnexpress']
+    articles_db = mongodb['article_db']
+    db = articles_db['articles']
     db.create_index([('crawled', 1)])
     db.create_index([('url', 1)])
     db.create_index([('topic', 1)])

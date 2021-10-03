@@ -18,7 +18,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # parser.add_argument('--topic', default='kinh-doanh')
     parser.add_argument('--workers', default=4, type=int)
-    parser.add_argument('--n-page-lookback', default=3, type=int)
+    parser.add_argument('--n-page-lookback', default=20, type=int)
     args = parser.parse_args()
     return args
 
@@ -70,16 +70,26 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
     except Exception as err:
         print('err datetime', err)
 
+    try:
+        topic_elm = driver.find_element_by_css_selector('.cat')
+        topic = topic_elm.get_attribute('innerHTML')
+    except Exception as err:
+        print('err content', err)
+        topic = ''
 
     data = {
         'crawled': True,
+        'source': 'cafef',
         'title': title,
         'description': desc,
         'content_html': content_html, 
-        'tags': [],
+        'first_topic': topic,
+        # 'tags': [],
         'url': url,
         'published_time': published_time,
-        'published_timestamp': published_timestamp
+        'published_timestamp': published_timestamp,
+
+        'keywords_extracted': False # temporal added
     }
 
     article_record = db.find_one({'url': url})
@@ -158,8 +168,8 @@ def crawl_multiple_topics(topic_list):
     print(topic_list)
     topic2id = load_topics()
     mongodb = MongoClient()
-    articles_db = mongodb['articles']
-    db = articles_db['cafef']
+    articles_db = mongodb['article_db']
+    db = articles_db['articles']
     db.create_index([('crawled', 1)])
     db.create_index([('url', 1)])
     db.create_index([('topic', 1)])

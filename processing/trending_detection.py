@@ -5,9 +5,9 @@ from datetime import date, datetime, timedelta, timezone
 
 STOPWORDS = open('data/Stopwords/stopwords_vi_without.txt', encoding='utf8').read().splitlines()
  
-ARTICLE_LIST = ['vnexpress']
+ARTICLE_LIST = ['vnexpress', 'cafef']
 
-INTERVAL_EXTRACTION_TIME = 60
+INTERVAL_EXTRACTION_TIME = 1800
 
 def get_keywords_stream(mongodb, year, month, day, article_source, look_back=14):
     db_keywords = mongodb['article_db']['articles']
@@ -24,13 +24,14 @@ def get_keywords_stream(mongodb, year, month, day, article_source, look_back=14)
         end_timestamp = end_day.timestamp()
 
         query = {
-            'source': article_source,
             'published_timestamp': {
                 '$gte': start_timestamp,
                 '$lt': end_timestamp
             },
             'keywords_extracted': True
         }
+        if article_source is not None:
+            query['source'] = article_source
 
         cursor = db_keywords.find(
             query,
@@ -74,8 +75,8 @@ def auto_extract_trending():
     while True:
         stime = time.time()
 
-        today = date.today() - timedelta(days=2)
-        for article_source in ARTICLE_LIST:
+        today = date.today()
+        for article_source in [None] + ARTICLE_LIST:
             trending_keywords = extract_trending_score(
                 mongodb,
                 today.year, 
