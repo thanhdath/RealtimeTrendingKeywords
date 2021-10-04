@@ -10,12 +10,12 @@ import selenium
 
 CHROME_DRIVER_PATH = './chromedriver.exe'
 URL = "http://vnexpress.net"
-INTERVAL_CHECK_NEW_ARTICLES = 60
+INTERVAL_CHECK_NEW_ARTICLES = 120
 
 def parse_args():
     parser = argparse.ArgumentParser()
     # parser.add_argument('--topic', default='kinh-doanh')
-    parser.add_argument('--workers', default=4, type=int)
+    parser.add_argument('--workers', default=2, type=int)
     parser.add_argument('--n-page-lookback', default=20, type=int)
     args = parser.parse_args()
     return args
@@ -43,14 +43,14 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         title_elm = driver.find_element_by_css_selector('.title-detail')
         title = title_elm.get_attribute('innerHTML')
     except Exception as err:
-        print('err title', err)
+        print(f'err title {url}\n{err}')
         title = ''
 
     try:
         desc_elm = driver.find_element_by_css_selector('.description')
         desc = desc_elm.get_attribute('innerHTML')
     except Exception as err:
-        print('err desc', err)
+        print(f'err desc {url}\n{err}')
         desc = ''
 
     try:
@@ -59,7 +59,7 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         height = content_elm.size['height'] + content_elm.location['y']
         driver.execute_script(f"window.scrollTo(0, {height});")
     except Exception as err:
-        print('err content', err)
+        print(f'err content {url}\n{err}')
         content_html = ''
 
     # get timestamp
@@ -71,12 +71,12 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         published_time = published_time.get_attribute('innerHTML')
         published_timestamp = convert_string_to_local_timestamp(published_time)
     except Exception as err:
-        print('Error get pusblished time', err)
+        print(f'Error get pusblished time {url}\n{err}')
         # return
 
     # get topics
     try:
-        topic_elms = driver.find_elements_by_css_selector('.breadcrumb > li')
+        topic_elms = driver.find_elements_by_css_selector('.breadcrumb > li > a')
 
         topics = [x.get_attribute('innerHTML') for x in topic_elms]
     except Exception as err:
@@ -117,7 +117,6 @@ def crawl_newest_urls(db, driver, topic, max_page=4, threshold_exists_url=8):
     for page in tqdm(range(1, max_page), desc="Crawling"):
         request_url = f"{URL}/{topic}-p{page}"
         driver.get(request_url)
-        time.sleep(0.5)
 
         # crawl article urls
         item_news = driver.find_elements_by_css_selector('.item-news')
@@ -168,7 +167,8 @@ def load_topics():
     topics = [x.strip() for x in topics]
     return topics
 
-def crawl_multiple_topics(topic_list):
+def crawl_multiple_topics(params):
+    topic_list, n_page_lookback = params
     print(topic_list)
     # mongodb = MongoClient()
     mongodb = MongoClient(host="mongodb")
@@ -205,7 +205,7 @@ def crawl_multiple_topics(topic_list):
 
     while True:
         for topic in topic_list:
-            crawl_newest_articles(db, driver, topic)
+            crawl_newest_articles(db, driver, topic, max_page=n_page_lookback)
 
         print(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
         time.sleep(INTERVAL_CHECK_NEW_ARTICLES)
@@ -222,7 +222,7 @@ def realtime_crawl_articles(args):
     divided_topics = chunks(topics, len(topics)//args.workers)
 
     pool = Pool(args.workers)
-    pool.map(crawl_multiple_topics, divided_topics)
+    pool.map(crawl_multiple_topics, [(topics, args.n_page_lookback) for topics in divided_topics])
     pool.close()
 
 
