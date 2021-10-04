@@ -167,7 +167,12 @@ def load_topics():
 def crawl_multiple_topics(topic_list):
     print(topic_list)
     topic2id = load_topics()
-    mongodb = MongoClient()
+    # mongodb = MongoClient()
+    mongodb = MongoClient(host="mongodb")
+    DATABASE_USERNAME = "admin"
+    DATABASE_PASSWORD = "admin"
+    mongodb.admin.authenticate( DATABASE_USERNAME , DATABASE_PASSWORD )
+
     articles_db = mongodb['article_db']
     db = articles_db['articles']
     db.create_index([('crawled', 1)])
@@ -177,11 +182,21 @@ def crawl_multiple_topics(topic_list):
     chrome_options = webdriver.ChromeOptions()
     prefs = {"profile.managed_default_content_settings.images": 2}
     chrome_options.add_experimental_option("prefs", prefs)
-    chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
-    driver = webdriver.Chrome(
-        executable_path=CHROME_DRIVER_PATH,
-        chrome_options=chrome_options
+    # driver = webdriver.Chrome(
+    #     executable_path=CHROME_DRIVER_PATH,
+    #     chrome_options=chrome_options
+    # )
+    instance_name = '_'.join(topic_list).replace(' ', '-')
+    driver = webdriver.Remote(
+        "http://selenium:4444/wd/hub",
+        # desired_capabilities={
+        #     "browserName": "chrome",
+        #     'name': instance_name,
+        #     'video': False
+        # },
+        options=chrome_options
     )
 
     while True:
