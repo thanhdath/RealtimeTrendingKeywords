@@ -1,0 +1,83 @@
+version: '3.6'
+# Deploys MongoDB with customization scripts and container with Mongo client
+# https://fabianlee.org/2018/05/20/docker-using-docker-compose-to-link-a-mongodb-server-and-client/
+#
+# usage:
+# sudo docker-compose build
+# sudo docker-compose up
+
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: mongodb
+    hostname: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=test
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      # seeding scripts
+#      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      # named volumes
+      - mongodb:/data/db
+      - mongoconfig:/data/configdb
+    networks:
+      - mongo_net
+    restart: "always"
+
+  selenium:
+    image: selenium/standalone-chrome:94.0
+    container_name: selenium
+    hostname: selenium
+    shm_size: 4gb
+    environment:
+      - SE_NODE_MAX_SESSION=10
+    ports:
+      - 4444:4444
+      - 7900:7900
+    networks:
+      - mongo_net
+    restart: "always"
+
+  crawler_cafef:
+    image: crawler
+    build: crawler/
+    container_name: crawler-cafef
+    hostname: crawler
+    volumes:
+      - ./crawler:/code
+    command: python crawl_cafef_multiprocess.py
+    networks:
+      - mongo_net
+    depends_on:
+      - selenium
+      - mongodb
+    restart: "always"
+
+  crawler_vnexpress:
+    image: crawler
+    build: crawler/
+    container_name: crawler-vnexpress
+    hostname: crawler
+    volumes:
+      - ./crawler:/code
+    command: python crawl_vnexpress_multiprocess.py
+    networks:
+      - mongo_net
+    depends_on:
+      - selenium
+      - mongodb
+    restart: "always"
+
+volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  mongodb:
+  mongoconfig:
+
+networks:
+  mongo_net:
+    driver: bridge
+
+# https://github.com/big-data-europe/docker-zeppelin/blob/master/docker-compose.yml

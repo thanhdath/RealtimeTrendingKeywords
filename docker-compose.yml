@@ -38,19 +38,36 @@ services:
     networks:
       - mongo_net
     restart: "always"
-  crawler:
+
+  crawler_cafef:
+    image: crawler
     build: crawler/
-    container_name: crawler
+    container_name: crawler-cafef
     hostname: crawler
     volumes:
       - ./crawler:/code
-    command: python crawl_vnexpress.py
+    command: python crawl_cafef_multiprocess.py
     networks:
       - mongo_net
     depends_on:
       - selenium
       - mongodb
     restart: "always"
+  crawler_vnexpress:
+    image: crawler
+    build: crawler/
+    container_name: crawler-vnexpress
+    hostname: crawler
+    volumes:
+      - ./crawler:/code
+    command: python crawl_vnexpress_multiprocess.py
+    networks:
+      - mongo_net
+    depends_on:
+      - selenium
+      - mongodb
+    restart: "always"
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
