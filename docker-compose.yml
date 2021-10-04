@@ -27,11 +27,14 @@ services:
     networks:
       - mongo_net
     restart: "always"
+
   selenium:
     image: selenium/standalone-chrome:94.0
     container_name: selenium
     hostname: selenium
     shm_size: 2gb
+    environment:
+      - SE_NODE_MAX_SESSIONS=6
     ports:
       - 4444:4444
       - 7900:7900
@@ -53,6 +56,7 @@ services:
       - selenium
       - mongodb
     restart: "always"
+
   crawler_vnexpress:
     image: crawler
     build: crawler/
@@ -68,6 +72,23 @@ services:
       - mongodb
     restart: "always"
 
+  processing:
+    image: processing
+    build: processing/
+    container_name: processing
+    hostname: processing
+    volumes:
+      - ./processing:/code
+    command: sh run_all.sh
+    networks:
+      - mongo_net
+    depends_on:
+      - mongodb
+      - crawler_vnexpress
+      - crawler_cafef
+      - elasticsearch
+    restart: "always"
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
@@ -81,6 +102,7 @@ services:
     restart: "always"
     networks:
       - mongo_net
+
 #  sparkmaster:
 #    image: bde2020/spark-master:2.3.2-hadoop3.1.1-java8
 #    container_name: sparkmaster

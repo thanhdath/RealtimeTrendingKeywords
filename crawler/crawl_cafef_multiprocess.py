@@ -9,7 +9,7 @@ from multiprocessing import Pool
 import selenium
 
 CHROME_DRIVER_PATH = './chromedriver.exe'
-INTERVAL_CHECK_NEW_ARTICLES = 60
+INTERVAL_CHECK_NEW_ARTICLES = 120
 URL = "http://cafef.vn"
 URL_page = "https://cafef.vn/timeline/{}/trang-{}.chn"
 
@@ -17,7 +17,7 @@ URL_page = "https://cafef.vn/timeline/{}/trang-{}.chn"
 def parse_args():
     parser = argparse.ArgumentParser()
     # parser.add_argument('--topic', default='kinh-doanh')
-    parser.add_argument('--workers', default=4, type=int)
+    parser.add_argument('--workers', default=2, type=int)
     parser.add_argument('--n-page-lookback', default=20, type=int)
     args = parser.parse_args()
     return args
@@ -32,14 +32,17 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
     if "https://cafef.vn/" not in url:
         url = f"https://cafef.vn/{url}"
 
-    print(url)
-    driver.get(url)
+    try:
+        driver.get(url)
+    except Exception as err:
+        print(f'error get url {url}\n{err}')
+        time.sleep(5)
 
     try:
         title_elm = driver.find_element_by_css_selector('h1.title')
         title = title_elm.get_attribute('innerHTML')
     except Exception as err:
-        print('err title', err)
+        print(f'err title {url}\n{err}')
         title = ''
 
     desc = None
@@ -51,14 +54,14 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         except Exception as err:
             time.sleep(1)
     if desc is None:
-        print('err desc')
+        print(f'err desc {url}\n{err}')
         desc = ''
 
     try:
         content_elm = driver.find_element_by_css_selector('#mainContent')
         content_html = content_elm.get_attribute('innerHTML')
     except Exception as err:
-        print('err content', err)
+        print(f'err content {url}\n{err}')
         content_html = ''
 
     published_timestamp = None
@@ -68,13 +71,13 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         published_time = published_time.get_attribute('innerHTML').strip()
         published_timestamp = convert_string_to_local_timestamp(published_time)
     except Exception as err:
-        print('err datetime', err)
+        print(f'err datetime {url}\n{err}')
 
     try:
         topic_elm = driver.find_element_by_css_selector('.cat')
         topic = topic_elm.get_attribute('innerHTML')
     except Exception as err:
-        print('err content', err)
+        print(f'err content {url}\n{err}')
         topic = ''
 
     data = {
@@ -164,7 +167,8 @@ def load_topics():
         topic2id[topic] = id
     return topic2id
 
-def crawl_multiple_topics(topic_list):
+def crawl_multiple_topics(params):
+    topic_list, n_page_lookback = params
     print(topic_list)
     topic2id = load_topics()
     # mongodb = MongoClient()
@@ -201,7 +205,7 @@ def crawl_multiple_topics(topic_list):
 
     while True:
         for topic in topic_list:
-            crawl_newest_articles(db, driver, topic, topic2id)
+            crawl_newest_articles(db, driver, topic, topic2id, max_page=n_page_lookback)
 
         print(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
         time.sleep(INTERVAL_CHECK_NEW_ARTICLES)
@@ -219,7 +223,7 @@ def realtime_crawl_articles(args):
     divided_topics = chunks(topics, len(topics)//args.workers)
 
     pool = Pool(args.workers)
-    pool.map(crawl_multiple_topics, divided_topics)
+    pool.map(crawl_multiple_topics, [(topics, args.n_page_lookback) for topics in divided_topics])
     pool.close()
 
 

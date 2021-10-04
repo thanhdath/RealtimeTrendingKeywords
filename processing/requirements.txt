@@ -3,13 +3,15 @@ bs4==0.0.1
 certifi==2021.5.30
 charset-normalizer==2.0.6
 click==8.0.1
+dataclasses
+elasticsearch==7.15.0
 filelock==3.3.0
 huggingface-hub==0.0.17
 idna==3.2
 importlib-metadata==4.8.1
 joblib==1.0.1
 nltk==3.6.3
-numpy==1.21.2
+numpy==1.19.5
 packaging==21.0
 pymongo==3.12.0
 pyparsing==2.4.7
@@ -18,8 +20,8 @@ PyYAML==5.4.1
 regex==2021.9.30
 requests==2.26.0
 sacremoses==0.0.46
-scikit-learn==1.0
-scipy==1.7.1
+scikit-learn
+scipy==1.5.4
 seqeval==1.2.2
 six==1.16.0
 soupsieve==2.2.1
