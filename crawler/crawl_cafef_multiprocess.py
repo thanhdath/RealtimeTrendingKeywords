@@ -7,6 +7,16 @@ import time
 import datetime
 from multiprocessing import Pool
 import selenium
+import pika
+import json
+from bs4 import BeautifulSoup
+import logging
+
+#logging.basicConfig(filename='log.log',
+    # filemode='a',
+    # format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+    # datefmt='%H:%M:%S',
+    # level=#logging.DEBUG)
 
 CHROME_DRIVER_PATH = './chromedriver.exe'
 INTERVAL_CHECK_NEW_ARTICLES = 120
@@ -27,6 +37,12 @@ def convert_string_to_local_timestamp(str_datetime):
     str_datetime 03-10-2021 - 22:46 PM
     """
     return time.mktime(datetime.datetime.strptime(str_datetime, "%d-%m-%Y - %H:%M %p").timetuple())
+
+def text_from_html(body):
+    soup = BeautifulSoup(body, 'html.parser')
+    text = soup.get_text()
+    text = re.sub("\s+", " ", text)
+    return text.strip()
 
 def crawl_article(db, driver: webdriver.Chrome, url: str):
     if "https://cafef.vn/" not in url:
@@ -100,6 +116,7 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         db.insert_one(data)
     else:
         db.update({'url': url}, {'$set': data})
+    return data
 
 def crawl_newest_urls(db, driver, topic, topic2id, max_page=4, threshold_exists_url=8):
     n_exists_url = 0
@@ -153,11 +170,29 @@ def crawl_newest_urls(db, driver, topic, topic2id, max_page=4, threshold_exists_
             break
     return all_newest_urls
 
-def crawl_newest_articles(db, driver, topic, topic2id, max_page=4, threshold_exists_url=8):
+def crawl_newest_articles(db, rabitmq_channel, driver, topic, topic2id, max_page=4, threshold_exists_url=8):
     new_urls = crawl_newest_urls(db, driver, topic, topic2id, max_page=max_page, threshold_exists_url=threshold_exists_url)
 
     for url in new_urls:
-        crawl_article(db, driver, url)
+        data = crawl_article(db, driver, url)
+        if data is not None:
+            send_data = {
+                '_id': str(data['_id']),
+                'source': data['source'],
+                'title': data['title'],
+                'description': data['description'],
+                'content_html': data['content_html'], 
+                'first_topic': data['first_topic'],
+                'url': data['url'],
+                'published_time': data['published_time'],
+                'published_timestamp': data['published_timestamp'],
+            }
+
+            rabitmq_channel.basic_publish(
+                exchange='',
+                routing_key='articles',
+                body=json.dumps(send_data)
+            )
 
 def load_topics():
     topics = open('url/cafef_topics.txt').read().split('\n')
@@ -168,8 +203,13 @@ def load_topics():
     return topic2id
 
 def crawl_multiple_topics(params):
+    log_fp = open('log.log', 'w+')
     topic_list, n_page_lookback = params
+
     print(topic_list)
+    #logging.info(topic_list)
+    # log_fp.write(topic_list)
+
     topic2id = load_topics()
     # mongodb = MongoClient()
     mongodb = MongoClient(host="mongodb")
@@ -183,6 +223,23 @@ def crawl_multiple_topics(params):
     db.create_index([('url', 1)])
     db.create_index([('topic', 1)])
 
+    # connect to rabitmq to send data to processing machine
+    print('connecting to rabbitmq')
+    #logging.info('trying to connect to rabbitmq')
+    while True:
+        try:
+            connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
+            break
+        except Exception as err:
+            print('connect error. try again in 5 seconds.')
+            time.sleep(5)
+    channel = connection.channel()
+    channel.queue_declare(queue='articles')
+    
+    print('done connection')
+    #logging.info('done connection')
+
+    # init chrome
     chrome_options = webdriver.ChromeOptions()
     prefs = {"profile.managed_default_content_settings.images": 2}
     chrome_options.add_experimental_option("prefs", prefs)
@@ -205,12 +262,14 @@ def crawl_multiple_topics(params):
 
     while True:
         for topic in topic_list:
-            crawl_newest_articles(db, driver, topic, topic2id, max_page=n_page_lookback)
+            crawl_newest_articles(db, channel, driver, topic, topic2id, max_page=n_page_lookback)
 
         print(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
+        #logging.info(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
         time.sleep(INTERVAL_CHECK_NEW_ARTICLES)
 
     driver.close()
+    connection.close()
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
@@ -222,6 +281,8 @@ def realtime_crawl_articles(args):
     topics = list(topic2id.keys())
     divided_topics = chunks(topics, len(topics)//args.workers)
 
+    print(f'Init pool with {args.workers} workers.')
+    #logging.info(f'Init pool with {args.workers} workers.')
     pool = Pool(args.workers)
     pool.map(crawl_multiple_topics, [(topics, args.n_page_lookback) for topics in divided_topics])
     pool.close()
