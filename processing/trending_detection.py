@@ -8,9 +8,9 @@ STOPWORDS = open('data/Stopwords/stopwords_vi_without.txt', encoding='utf8').rea
  
 ARTICLE_LIST = ['vnexpress', 'cafef']
 
-INTERVAL_EXTRACTION_TIME = 1800
+INTERVAL_EXTRACTION_TIME = 3600
 
-def get_keywords_stream(es, year, month, day, article_source, look_back=14):
+def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
     # db_keywords = mongodb['article_db']['articles']
 
     
@@ -25,7 +25,85 @@ def get_keywords_stream(es, year, month, day, article_source, look_back=14):
         start_timestamp = start_day.timestamp()
         end_timestamp = end_day.timestamp()
 
-        
+        if article_source is not None:
+            query = {
+                'bool': {
+                    'must': [
+                        {
+                            'range': {
+                                'published_timestamp': {
+                                    'gte': start_timestamp,
+                                    'lt': end_timestamp
+                                }
+                            }
+                        },
+                        {
+                            'match': {
+                                'source': article_source
+                            }
+                        }
+                    ]
+                }
+            }
+        else:
+            query={
+                'range': {
+                    'published_timestamp': {
+                        'gte': start_timestamp,
+                        'lt': end_timestamp
+                    }
+                }
+            }
+            
+
+        cursor = es.search(
+            index='article_keywords',
+            query=query
+        )
+        cursor = cursor['hits']['hits']
+
+        # query = {
+        #     'published_timestamp': {
+        #         '$gte': start_timestamp,
+        #         '$lt': end_timestamp
+        #     },
+        #     'keywords_extracted': True
+        # }
+        # if article_source is not None:
+        #     query['source'] = article_source
+
+        # cursor = db_keywords.find(
+        #     query,
+        #     {
+        #         'keywords': True, 
+        #         'keyword_scores': True
+        #     }
+        # )
+
+        day_keywords = []
+        day_keyword_scores = []
+
+        for row in cursor:
+            day_keywords.append(row['_source']['keywords'])
+            day_keyword_scores.append(row['_source']['keyword_scores'])
+
+        keywords_stream.append(day_keywords)
+        keyword_scores_stream.append(day_keyword_scores)
+    
+    return keywords_stream, keyword_scores_stream
+
+def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
+    # db_keywords = mongodb['article_db']['articles']
+
+    keywords_stream = []
+    keyword_scores_stream = []
+
+    for i in range(look_back):
+        start_day = current_datetime - timedelta(days=i+1)
+        end_day = current_datetime - timedelta(days=i)
+
+        start_timestamp = start_day.timestamp()
+        end_timestamp = end_day.timestamp()
 
         if article_source is not None:
             query = {
@@ -94,8 +172,8 @@ def get_keywords_stream(es, year, month, day, article_source, look_back=14):
     
     return keywords_stream, keyword_scores_stream
     
-def extract_trending_score(es, year, month, day, article_source):
-    keywords_stream, keyword_scores_stream = get_keywords_stream(es, year, month, day, article_source, look_back=1)
+def extract_trending_score(es, current_datetime, article_source):
+    keywords_stream, keyword_scores_stream = get_keywords_stream_24h(es, current_datetime, article_source, look_back=1)
     day_keywords = keywords_stream[0]
     day_kscores = keyword_scores_stream[0]
 
@@ -130,13 +208,14 @@ def auto_extract_trending():
         try:
             stime = time.time()
 
-            today = date.today()
+            current_datetime = datetime.now()
             for article_source in [None] + ARTICLE_LIST:
                 trending_keywords = extract_trending_score(
                     es,
-                    today.year, 
-                    today.month, 
-                    today.day, 
+                    current_datetime,
+                    # today.year, 
+                    # today.month, 
+                    # today.day, 
                     article_source=article_source)
                 
                 dt_now = datetime.now()
@@ -157,7 +236,7 @@ def auto_extract_trending():
                     body={
                         'trending_keywords': keywords,
                         'keywords_rank_scores': keywords_rank_scores,
-                        'time': today.strftime("%Y/%m/%d"),
+                        'time': current_datetime.strftime("%Y/%m/%d"),
                         'article_source': article_source,
                         'extracted_timestamp': dt_now.timestamp(),
                         'extracted_time': dt_now.strftime("%Y/%m/%d %H:%M:%S")

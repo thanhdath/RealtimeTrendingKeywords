@@ -28,9 +28,10 @@ def convert_string_to_local_timestamp(str_datetime):
 def crawl_article(db, driver: webdriver.Chrome, url: str):
     try:
         driver.get(url)
-    except selenium.common.exceptions.TimeoutException as err:
+    except Exception as err:
         print(err)
         time.sleep(10)
+        return
     # time.sleep(.5)
 
     try:
