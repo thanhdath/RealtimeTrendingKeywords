@@ -25,7 +25,16 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
         start_timestamp = start_day.timestamp()
         end_timestamp = end_day.timestamp()
 
-        if article_source is not None:
+        if article_source == 'all':
+            query={
+                'range': {
+                    'published_timestamp': {
+                        'gte': start_timestamp,
+                        'lt': end_timestamp
+                    }
+                }
+            }
+        else:
             query = {
                 'bool': {
                     'must': [
@@ -44,16 +53,7 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
                         }
                     ]
                 }
-            }
-        else:
-            query={
-                'range': {
-                    'published_timestamp': {
-                        'gte': start_timestamp,
-                        'lt': end_timestamp
-                    }
-                }
-            }
+            }   
             
 
         cursor = es.search(
@@ -105,7 +105,16 @@ def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
         start_timestamp = start_day.timestamp()
         end_timestamp = end_day.timestamp()
 
-        if article_source is not None:
+        if article_source == 'all':
+            query={
+                'range': {
+                    'published_timestamp': {
+                        'gte': start_timestamp,
+                        'lt': end_timestamp
+                    }
+                }
+            }
+        else:
             query = {
                 'bool': {
                     'must': [
@@ -124,17 +133,7 @@ def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
                         }
                     ]
                 }
-            }
-        else:
-            query={
-                'range': {
-                    'published_timestamp': {
-                        'gte': start_timestamp,
-                        'lt': end_timestamp
-                    }
-                }
-            }
-            
+            }      
 
         cursor = es.search(
             index='article_keywords',
@@ -209,7 +208,7 @@ def auto_extract_trending():
             stime = time.time()
 
             current_datetime = datetime.now()
-            for article_source in [None] + ARTICLE_LIST:
+            for article_source in ['all'] + ARTICLE_LIST:
                 trending_keywords = extract_trending_score(
                     es,
                     current_datetime,
