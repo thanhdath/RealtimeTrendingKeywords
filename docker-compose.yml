@@ -49,7 +49,7 @@ services:
     hostname: crawler
     volumes:
       - ./crawler:/code
-    command: python crawl_cafef_multiprocess.py
+    command: python crawl_cafef_multiprocess.py --workers 1 
     networks:
       - mongo_net
     depends_on:
@@ -64,7 +64,7 @@ services:
     hostname: crawler
     volumes:
       - ./crawler:/code
-    command: python crawl_vnexpress_multiprocess.py
+    command: python crawl_vnexpress_multiprocess.py --workers 1
     networks:
       - mongo_net
     depends_on:
