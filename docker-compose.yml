@@ -41,6 +41,11 @@ services:
     networks:
       - mongo_net
     restart: "always"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4444/hub" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   crawler_cafef:
     image: crawler
@@ -102,6 +107,11 @@ services:
     restart: "always"
     networks:
       - mongo_net
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
