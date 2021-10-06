@@ -65,7 +65,7 @@ services:
     hostname: crawler
     volumes:
       - ./crawler:/code
-    command: python crawl_vnexpress_multiprocess.py --workers 2 --n-page-lookback 40
+    command: python crawl_vnexpress_multiprocess.py --workers 2 --n-page-lookback 20
     networks:
       - mongo_net
     depends_on:
@@ -102,39 +102,6 @@ services:
     restart: "always"
     networks:
       - mongo_net
-
-#  sparkmaster:
-#    image: bde2020/spark-master:2.3.2-hadoop3.1.1-java8
-#    container_name: sparkmaster
-#    hostname: sparkmaster
-#    ports:
-#      - 8080:8080
-#      - 7077:7077
-#    expose:
-#      - 7077
-#    networks:
-#      - mongo_net
-#    restart: "always"
-
-#  zeppelin:
-#    container_name: zeppelin
-#    image: apache/zeppelin:0.9.0
-#    hostname: zeppelin
-#    ports:
-#      - 18081:8081
-#      - 8090:8090
-#      - 4040:4040
-#    environment:
-#      - ZEPPELIN_PORT=8090
-#      - SPARK_MASTER=spark://sparkmaster:7077
-#      - MASTER=spark://sparkmaster:7077
-##      - CORE_CONF_fs_defaultFS=hdfs://hadoopnamenode:8020
-#
-#    volumes:
-#      - ./data/notebook:/opt/zeppelin/notebook
-#    networks:
-#      - mongo_net
-#    restart: "always"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2

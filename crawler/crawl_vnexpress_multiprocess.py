@@ -238,7 +238,7 @@ def crawl_multiple_topics(params):
     # connect to rabitmq to send data to processing machine
     while True:
         try:
-            connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT_MQ_HOST, heartbeat=10))
+            connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT_MQ_HOST, heartbeat=0))
             break
         except Exception as err:
             print('connect error. try again in 5 seconds.')
