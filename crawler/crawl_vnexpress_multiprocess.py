@@ -20,7 +20,7 @@ logging.basicConfig(filename='log.log',
 
 CHROME_DRIVER_PATH = './chromedriver.exe'
 URL = "http://vnexpress.net"
-INTERVAL_CHECK_NEW_ARTICLES = 120
+INTERVAL_CHECK_NEW_ARTICLES = 60
 
 MONGODB_HOST = "mongodb"
 RABBIT_MQ_HOST = "rabbitmq"

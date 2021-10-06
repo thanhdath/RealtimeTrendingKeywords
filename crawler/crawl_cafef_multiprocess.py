@@ -19,7 +19,7 @@ import logging
     # level=#logging.INFO)
 
 CHROME_DRIVER_PATH = './chromedriver.exe'
-INTERVAL_CHECK_NEW_ARTICLES = 120
+INTERVAL_CHECK_NEW_ARTICLES = 60
 URL = "http://cafef.vn"
 URL_page = "https://cafef.vn/timeline/{}/trang-{}.chn"
 
