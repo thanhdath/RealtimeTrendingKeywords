@@ -23,13 +23,13 @@ INTERVAL_CHECK_NEW_ARTICLES = 120
 URL = "http://cafef.vn"
 URL_page = "https://cafef.vn/timeline/{}/trang-{}.chn"
 
-# MONGODB_HOST = "mongodb"
-# RABBIT_MQ_HOST = "rabbitmq"
-# SELENIUM_HOST = "http://selenium:4444/wd/hub"
+MONGODB_HOST = "mongodb"
+RABBIT_MQ_HOST = "rabbitmq"
+SELENIUM_HOST = "http://selenium:4444/wd/hub"
 
-MONGODB_HOST = "localhost:27017"
-RABBIT_MQ_HOST = "localhost"
-SELENIUM_HOST = "http://localhost:4444/wd/hub"
+# MONGODB_HOST = "localhost:27017"
+# RABBIT_MQ_HOST = "localhost"
+# SELENIUM_HOST = "http://localhost:4444/wd/hub"
 
 def parse_args():
     parser = argparse.ArgumentParser()
