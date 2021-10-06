@@ -9,6 +9,7 @@ STOPWORDS = open('data/Stopwords/stopwords_vi_without.txt', encoding='utf8').rea
 ARTICLE_LIST = ['vnexpress', 'cafef']
 
 INTERVAL_EXTRACTION_TIME = 3600
+N_KEYWORDS = 100
 
 def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
     # db_keywords = mongodb['article_db']['articles']
@@ -171,7 +172,7 @@ def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
     
     return keywords_stream, keyword_scores_stream
     
-def extract_trending_score(es, current_datetime, article_source):
+def extract_trending_score(es, current_datetime, article_source, n=100):
     keywords_stream, keyword_scores_stream = get_keywords_stream_24h(es, current_datetime, article_source, look_back=1)
     day_keywords = keywords_stream[0]
     day_kscores = keyword_scores_stream[0]
@@ -183,6 +184,7 @@ def extract_trending_score(es, current_datetime, article_source):
         keyword_counter.update(doc_keywords)
 
     keyword_counter = sorted(keyword_counter.items(), key=lambda x: x[1], reverse=True)
+    keyword_counter = keyword_counter[:n]
     return keyword_counter
 
 def auto_extract_trending():
@@ -215,7 +217,8 @@ def auto_extract_trending():
                     # today.year, 
                     # today.month, 
                     # today.day, 
-                    article_source=article_source)
+                    article_source=article_source,
+                    n=N_KEYWORDS)
                 
                 dt_now = datetime.now()
 

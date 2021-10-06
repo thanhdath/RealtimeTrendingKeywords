@@ -26,6 +26,7 @@ def extract_keywords(text, n=10):
 
 
 BATCH_SIZE = 32
+N_KEYWORDS = 40
 
 ARTICLE_LIST = ['vnexpress', 'cafef']
 
@@ -36,7 +37,7 @@ def callback(es, body):
 
     html = article['content_html']
     text = html2text(html)
-    keywords_with_scores = extract_keywords(text)
+    keywords_with_scores = extract_keywords(text, n=N_KEYWORDS)
     keywords, scores = list(zip(*keywords_with_scores))
 
     # get source, url, first_topic, keywords, keyword_scores and insert to elasticsearch

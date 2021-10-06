@@ -23,6 +23,13 @@ INTERVAL_CHECK_NEW_ARTICLES = 120
 URL = "http://cafef.vn"
 URL_page = "https://cafef.vn/timeline/{}/trang-{}.chn"
 
+# MONGODB_HOST = "mongodb"
+# RABBIT_MQ_HOST = "rabbitmq"
+# SELENIUM_HOST = "http://selenium:4444/wd/hub"
+
+MONGODB_HOST = "localhost:27017"
+RABBIT_MQ_HOST = "localhost"
+SELENIUM_HOST = "http://localhost:4444/wd/hub"
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -70,7 +77,7 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         except Exception as err:
             time.sleep(1)
     if desc is None:
-        print(f'err desc {url}\n{err}')
+        print(f'err desc {url}')
         desc = ''
 
     try:
@@ -112,10 +119,15 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
     }
 
     article_record = db.find_one({'url': url})
+    # print(article_record)
+    data_id = None
     if article_record is None:
-        db.insert_one(data)
+        _id = db.insert_one(data)
+        data_id = _id.inserted_id
     else:
         db.update({'url': url}, {'$set': data})
+        data_id = str(article_record['_id'])
+    data['_id'] = data_id
     return data
 
 def crawl_newest_urls(db, driver, topic, topic2id, max_page=4, threshold_exists_url=8):
@@ -212,7 +224,7 @@ def crawl_multiple_topics(params):
 
     topic2id = load_topics()
     # mongodb = MongoClient()
-    mongodb = MongoClient(host="mongodb")
+    mongodb = MongoClient(host=MONGODB_HOST)
     DATABASE_USERNAME = "admin"
     DATABASE_PASSWORD = "admin"
     mongodb.admin.authenticate( DATABASE_USERNAME , DATABASE_PASSWORD )
@@ -228,7 +240,7 @@ def crawl_multiple_topics(params):
     #logging.info('trying to connect to rabbitmq')
     while True:
         try:
-            connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
+            connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT_MQ_HOST))
             break
         except Exception as err:
             print('connect error. try again in 5 seconds.')
@@ -251,22 +263,22 @@ def crawl_multiple_topics(params):
     # )
     instance_name = '_'.join(topic_list).replace(' ', '-')
     driver = webdriver.Remote(
-        "http://selenium:4444/wd/hub",
-        # desired_capabilities={
-        #     "browserName": "chrome",
-        #     'name': instance_name,
-        #     'video': False
-        # },
+        SELENIUM_HOST,
         options=chrome_options
     )
 
     while True:
-        for topic in topic_list:
-            crawl_newest_articles(db, channel, driver, topic, topic2id, max_page=n_page_lookback)
+        try:
+            for topic in topic_list:
+                crawl_newest_articles(db, channel, driver, topic, topic2id, max_page=n_page_lookback)
 
-        print(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
-        #logging.info(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
-        time.sleep(INTERVAL_CHECK_NEW_ARTICLES)
+            print(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
+            #logging.info(f'sleeping for {INTERVAL_CHECK_NEW_ARTICLES}s')
+            time.sleep(INTERVAL_CHECK_NEW_ARTICLES)
+        except Exception as err:
+            print('Unknown error: ', err)
+            print('Sleep for 10 seconds')
+            time.sleep(10)
 
     driver.close()
     connection.close()
