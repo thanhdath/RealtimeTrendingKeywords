@@ -16,7 +16,7 @@ import logging
     # filemode='a',
     # format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
     # datefmt='%H:%M:%S',
-    # level=#logging.DEBUG)
+    # level=#logging.INFO)
 
 CHROME_DRIVER_PATH = './chromedriver.exe'
 INTERVAL_CHECK_NEW_ARTICLES = 120
@@ -188,23 +188,26 @@ def crawl_newest_articles(db, rabitmq_channel, driver, topic, topic2id, max_page
     for url in new_urls:
         data = crawl_article(db, driver, url)
         if data is not None:
-            send_data = {
-                '_id': str(data['_id']),
-                'source': data['source'],
-                'title': data['title'],
-                'description': data['description'],
-                'content_html': data['content_html'], 
-                'first_topic': data['first_topic'],
-                'url': data['url'],
-                'published_time': data['published_time'],
-                'published_timestamp': data['published_timestamp'],
-            }
+            try:
+                send_data = {
+                    '_id': str(data['_id']),
+                    'source': data['source'],
+                    'title': data['title'],
+                    'description': data['description'],
+                    'content_html': data['content_html'], 
+                    'first_topic': data['first_topic'],
+                    'url': data['url'],
+                    'published_time': data['published_time'],
+                    'published_timestamp': data['published_timestamp'],
+                }
 
-            rabitmq_channel.basic_publish(
-                exchange='',
-                routing_key='articles',
-                body=json.dumps(send_data)
-            )
+                rabitmq_channel.basic_publish(
+                    exchange='',
+                    routing_key='articles',
+                    body=json.dumps(send_data)
+                )
+            except Exception as err:
+                print(f'Error sending data to rabbitmq - url {url}\n{err}')
 
 def load_topics():
     topics = open('url/cafef_topics.txt').read().split('\n')
@@ -240,7 +243,7 @@ def crawl_multiple_topics(params):
     #logging.info('trying to connect to rabbitmq')
     while True:
         try:
-            connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT_MQ_HOST))
+            connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT_MQ_HOST, heartbeat=10))
             break
         except Exception as err:
             print('connect error. try again in 5 seconds.')
