@@ -31,30 +31,43 @@ N_KEYWORDS = 40
 ARTICLE_LIST = ['vnexpress', 'cafef']
 
 def callback(es, body):
-    article = json.loads(body)
+    try:
+        article = json.loads(body)
 
-    if 'content_html' not in article: return
+        if 'content_html' not in article: return
+        
+        # print(f"Processing article {article['url']}")
+        html = article['content_html']
+        text = html2text(html)
+        text = text.strip()
 
-    html = article['content_html']
-    text = html2text(html)
-    keywords_with_scores = extract_keywords(text, n=N_KEYWORDS)
-    keywords, scores = list(zip(*keywords_with_scores))
+        if len(text) == 0:
+            return 
 
-    # get source, url, first_topic, keywords, keyword_scores and insert to elasticsearch
-    es.index(
-        index='article_keywords',
-        doc_type='article_keywords',
-        id=str(article['_id']),
-        body={
-            'source': article['source'],
-            'url': article['url'],
-            'first_topic': article['first_topic'],
-            'keywords': keywords,
-            'keyword_scores': scores,
-            'published_time': article['published_time'],
-            'published_timestamp': article['published_timestamp']
-        }
-    )
+        keywords_with_scores = extract_keywords(text, n=N_KEYWORDS)
+        
+        if len(keywords_with_scores) == 0:
+            return
+
+        keywords, scores = list(zip(*keywords_with_scores))
+
+        # get source, url, first_topic, keywords, keyword_scores and insert to elasticsearch
+        es.index(
+            index='article_keywords',
+            doc_type='article_keywords',
+            id=str(article['_id']),
+            body={
+                'source': article['source'],
+                'url': article['url'],
+                'first_topic': article['first_topic'],
+                'keywords': keywords,
+                'keyword_scores': scores,
+                'published_time': article['published_time'],
+                'published_timestamp': article['published_timestamp']
+            }
+        )
+    except Exception as err:
+        print('callback function error', err)
     
 
 def auto_extract_keywords():
@@ -69,10 +82,10 @@ def auto_extract_keywords():
             # articles_db = mongodb['article_db']
 
             connection = pika.BlockingConnection(
-                pika.ConnectionParameters('rabbitmq')
+                pika.ConnectionParameters('rabbitmq', heartbeat=3600) # 0 means keep connecting even not see any messages
             )
             channel = connection.channel()
-            channel.queue_declare(queue='articles')
+            # channel.queue_declare(queue='articles')
 
             # store data in elasticsearch
             es = Elasticsearch([{'host': 'elasticsearch'}])

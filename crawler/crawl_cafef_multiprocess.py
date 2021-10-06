@@ -243,7 +243,7 @@ def crawl_multiple_topics(params):
     #logging.info('trying to connect to rabbitmq')
     while True:
         try:
-            connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT_MQ_HOST, heartbeat=10))
+            connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT_MQ_HOST, heartbeat=0))  # 0 means keep connecting even not see any messages
             break
         except Exception as err:
             print('connect error. try again in 5 seconds.')
