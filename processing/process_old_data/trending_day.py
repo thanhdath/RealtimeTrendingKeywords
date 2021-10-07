@@ -56,10 +56,12 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
                 }
             }   
             
+        print(query)
 
         cursor = es.search(
             index='article_keywords',
-            query=query
+            query=query,
+            size=10000
         )
         cursor = cursor['hits']['hits']
 
@@ -98,6 +100,8 @@ def extract_trending_score_day(es, year, month, day, article_source, n=100):
     day_keywords = keywords_stream[0]
     day_kscores = keyword_scores_stream[0]
 
+    n_articles = len(day_keywords)
+
     from collections import Counter
     keyword_counter = Counter()
     
@@ -106,7 +110,7 @@ def extract_trending_score_day(es, year, month, day, article_source, n=100):
 
     keyword_counter = sorted(keyword_counter.items(), key=lambda x: x[1], reverse=True)
     keyword_counter = keyword_counter[:n]
-    return keyword_counter
+    return keyword_counter, n_articles
 
 
 def auto_extract_trending():
@@ -131,13 +135,13 @@ def auto_extract_trending():
     stime = time.time()
 
     # current_datetime = datetime.now()
-    for i in range(30*6):
-        current_datetime = datetime.today()
+    for i in range(30*12):
+        current_datetime = datetime.today().date()
         extract_day = current_datetime - timedelta(days=i)
         print(f'process day {extract_day}')
 
         for article_source in ['all']:
-            trending_keywords = extract_trending_score_day(
+            trending_keywords, n_articles = extract_trending_score_day(
                 es,
                 extract_day.year, 
                 extract_day.month, 
@@ -153,14 +157,15 @@ def auto_extract_trending():
             es.index(
                 index='trending_day',
                 doc_type='trending_day',
-                id=extract_day.timestamp(),
+                id=datetime(extract_day.year, extract_day.month, extract_day.day).timestamp(),
                 body={
                     'trending_keywords': keywords,
                     'keywords_rank_scores': keywords_rank_scores,
                     'time': extract_day.strftime("%Y/%m/%d"),
                     'article_source': article_source,
-                    'extracted_timestamp': extract_day.timestamp(),
-                    'extracted_time': extract_day.strftime("%Y/%m/%d %H:%M:%S")
+                    'extracted_timestamp': datetime(extract_day.year, extract_day.month, extract_day.day).timestamp(),
+                    'extracted_time': extract_day.strftime("%Y/%m/%d %H:%M:%S"),
+                    'n_articles': n_articles
                 }
             )
 

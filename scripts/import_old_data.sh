@@ -16,6 +16,5 @@ mongodump -u admin -p admin --host localhost:27018 --authenticationDatabase admi
 
 
 # server
-mongorestore -u admin -p admin --host localhost:27017 --authenticationDatabase admin --gzip --archive=article_db.gz --db article_db
-
+docker exec -it mongodb mongorestore -u admin -p admin --host localhost:27017 --authenticationDatabase admin --gzip --archive=/article_db_with_keywords.gz --nsInclude article_db
 

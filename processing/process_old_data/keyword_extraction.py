@@ -14,18 +14,18 @@ IDF = json.load(open("data/idf.json"))
 MAX_IDF = max(IDF.values())
 
 def extract_keywords(text, n=10):
+    # text = clean_str(text)
     tfs = compute_tf(text)
     tfidfs = {}
     for word, tf in tfs.items():
-        if word in stopwords or is_number(word): 
-            continue 
+        if word in stopwords or is_number(word) or len(word.strip()) == 0: 
+            continue
         tfidf = tf*IDF.get(word, MAX_IDF)
         tfidfs[word] = tfidf
     sorted_keywords = sorted(tfidfs.items(), key=lambda x: x[1], reverse=True)
     sorted_keywords = sorted_keywords[:n]
     sorted_keywords = [(x[0].replace("_", " "), x[1]) for x in sorted_keywords]
     return sorted_keywords
-
 
 BATCH_SIZE = 32
 N_KEYWORDS = 40
@@ -36,14 +36,23 @@ ARTICLE_LIST = ['vnexpress', 'cafef']
 def extract_keyword_and_insert(article):
     # print(article['url'])
     if 'content_html' not in article: return [], []
-    html = article['content_html']
-    text = html2text(html)
-    text = text.strip()
+    description_html = article['description']
+    content_html = article['content_html']
+
+    content = html2text(content_html)
+    content = content.strip()
+
+    description = html2text(description_html)
+    description = description.strip()
+
+    title = article['title'].strip()
+
+    text = '. '.join([title, description, content])
 
     if len(text) == 0:
         return [], []
             
-    keywords_with_scores = extract_keywords(text)
+    keywords_with_scores = extract_keywords(text, n=N_KEYWORDS)
 
     if len(keywords_with_scores) == 0:
         return [], []
@@ -80,7 +89,13 @@ def auto_extract_keywords():
             time.sleep(5)
 
     # res = articles_db['articles'].update({}, 
-    #     {'$set': {'keywords_extracted': False}},
+    #     {
+    #         '$set': {
+    #             'keywords_extracted': False,
+    #             'keywords': None,
+    #             'keyword_scores': None
+    #         }
+    #     },
     #     multi=True
     # )
     # print('update ', res)
@@ -92,10 +107,13 @@ def auto_extract_keywords():
 
     batch_articles = []
     for article in tqdm(
-        articles_db['articles'].find({'keywords_extracted': False}, no_cursor_timeout=True).sort('published_timestamp', -1), 
+        articles_db['articles'].find({
+            # 'keywords_extracted': False
+        }, no_cursor_timeout=True).sort('published_timestamp', -1), 
         total=articles_db['articles'].count(),
         desc="processing keywords"
         ):
+
         batch_articles.append(article)
 
         if len(batch_articles) == workers:
@@ -106,20 +124,20 @@ def auto_extract_keywords():
             if len(res) > 0:
                 keywordss, scoress = list(zip(*res))
 
-                for keywords, scores in zip(keywordss, scoress):
-                    es.index(
-                        index='article_keywords',
-                        doc_type='article_keywords',
-                        id=str(article['_id']),
-                        body={
-                            'source': article['source'],
-                            'url': article['url'],
-                            'first_topic': article['first_topic'],
-                            'keywords': keywords,
-                            'keyword_scores': scores,
-                            'published_timestamp': article['published_timestamp']
-                        }
-                    )
+                for keywords, scores, article in zip(keywordss, scoress, batch_articles):
+                    # es.index(
+                    #     index='article_keywords',
+                    #     doc_type='article_keywords',
+                    #     id=str(article['_id']),
+                    #     body={
+                    #         'source': article['source'],
+                    #         'url': article['url'],
+                    #         'first_topic': article['first_topic'],
+                    #         'keywords': keywords,
+                    #         'keyword_scores': scores,
+                    #         'published_timestamp': article['published_timestamp']
+                    #     }
+                    # )
 
                     articles_db['articles'].update({
                         '_id': article['_id']
@@ -140,20 +158,20 @@ def auto_extract_keywords():
     if len(res) > 0:
         keywordss, scoress = list(zip(*res))
 
-        for keywords, scores in zip(keywordss, scoress):
-            es.index(
-                index='article_keywords',
-                doc_type='article_keywords',
-                id=str(article['_id']),
-                body={
-                    'source': article['source'],
-                    'url': article['url'],
-                    'first_topic': article['first_topic'],
-                    'keywords': keywords,
-                    'keyword_scores': scores,
-                    'published_timestamp': article['published_timestamp']
-                }
-            )
+        for keywords, scores, article in zip(keywordss, scoress, batch_articles):
+            # es.index(
+            #     index='article_keywords',
+            #     doc_type='article_keywords',
+            #     id=str(article['_id']),
+            #     body={
+            #         'source': article['source'],
+            #         'url': article['url'],
+            #         'first_topic': article['first_topic'],
+            #         'keywords': keywords,
+            #         'keyword_scores': scores,
+            #         'published_timestamp': article['published_timestamp']
+            #     }
+            # )
 
             articles_db['articles'].update({
                 '_id': article['_id']

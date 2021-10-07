@@ -12,11 +12,12 @@ IDF = json.load(open("data/idf.json"))
 MAX_IDF = max(IDF.values())
 
 def extract_keywords(text, n=10):
+    # text = clean_str(text)
     tfs = compute_tf(text)
     tfidfs = {}
     for word, tf in tfs.items():
-        if word in stopwords or is_number(word): 
-            continue 
+        if word in stopwords or is_number(word) or len(word.strip()) == 0: 
+            continue
         tfidf = tf*IDF.get(word, MAX_IDF)
         tfidfs[word] = tfidf
     sorted_keywords = sorted(tfidfs.items(), key=lambda x: x[1], reverse=True)
@@ -37,9 +38,18 @@ def callback(es, body):
         if 'content_html' not in article: return
         
         # print(f"Processing article {article['url']}")
-        html = article['content_html']
-        text = html2text(html)
-        text = text.strip()
+        description_html = article['description']
+        content_html = article['content_html']
+
+        content = html2text(content_html)
+        content = content.strip()
+
+        description = html2text(description_html)
+        description = description.strip()
+
+        title = article['title']
+
+        text = '. '.join([title, description, content])
 
         if len(text) == 0:
             return 

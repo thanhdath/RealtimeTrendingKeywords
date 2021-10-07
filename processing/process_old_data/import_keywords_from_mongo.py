@@ -92,9 +92,35 @@ def auto_extract_keywords():
         desc="importing keywords to elasticsearch"
         ):
 
-        keywords, scores = article['keywords']
+        keywords = article['keywords']
         scores = article['keyword_scores']
 
+        if len(keywords) == 0:
+            continue
+
+        res = es.search(index="article_keywords", doc_type='article_keywords', body={
+            "query": {
+                "match_phrase": {
+                    "url": article['url']
+                }
+            }
+        })
+        res = res['hits']['hits']
+
+        if len(res) > 0:
+            for old_record in res:
+                try:
+                    es.delete(
+                        index="article_keywords",
+                        doc_type="article_keywords",
+                        id=old_record['_id'])
+                except Exception as err:
+                    print(err)
+
+        idx_keep = [i for i, k in enumerate(keywords) if len(k.strip()) > 0]
+        keywords = [keywords[i] for i in idx_keep]
+        scores = [scores[i] for i in idx_keep]
+            
         es.index(
             index='article_keywords',
             doc_type='article_keywords',
@@ -105,6 +131,7 @@ def auto_extract_keywords():
                 'first_topic': article['first_topic'],
                 'keywords': keywords,
                 'keyword_scores': scores,
+                'published_time': article['published_time'],
                 'published_timestamp': article['published_timestamp']
             }
         )
