@@ -34,7 +34,7 @@ services:
     hostname: selenium
     shm_size: 2gb
     environment:
-      - SE_NODE_MAX_SESSIONS=6
+      - SE_NODE_MAX_SESSIONS=4
     ports:
       - 4444:4444
       - 7900:7900
@@ -42,7 +42,7 @@ services:
       - mongo_net
     restart: "always"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:4444/hub" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:4444" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -54,7 +54,7 @@ services:
     hostname: crawler
     volumes:
       - ./crawler:/code
-    command: python crawl_cafef_multiprocess.py --workers 1 --n-page-lookback 40
+    command: python crawl_cafef_multiprocess.py --workers 2 --n-page-lookback 40
     networks:
       - mongo_net
     depends_on:
@@ -70,7 +70,7 @@ services:
     hostname: crawler
     volumes:
       - ./crawler:/code
-    command: python crawl_vnexpress_multiprocess.py --workers 1 --n-page-lookback 20
+    command: python crawl_vnexpress_multiprocess.py --workers 2 --n-page-lookback 20
     networks:
       - mongo_net
     depends_on:
@@ -92,6 +92,7 @@ services:
     depends_on:
       - mongodb
       - elasticsearch
+      - rabbitmq
     restart: "always"
 
   rabbitmq:
@@ -135,6 +136,11 @@ services:
       - 9200:9200
     networks:
       - mongo_net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   kibana:
     image: 'docker.elastic.co/kibana/kibana:6.3.2'
