@@ -62,6 +62,19 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         published_timestamp = convert_string_to_local_timestamp(published_time)
     except Exception as err:
         print('err datetime', err)
+
+    # get topics
+    try:
+        topic_elms = driver.find_elements_by_css_selector('.breadcrumb > li > a')
+        topics = [x.get_attribute('innerHTML') for x in topic_elms]
+        # topics = [text_from_html(x) for x in topic_elms]
+    except Exception as err:
+        topics = []
+        print(f'err topic {url}')
+    if len(topics) > 0:
+        first_topic = topics[0]
+    else:
+        first_topic = None
     
     data = {
         'crawled': True,
