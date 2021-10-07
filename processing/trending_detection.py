@@ -210,7 +210,7 @@ def auto_extract_trending():
             stime = time.time()
 
             current_datetime = datetime.now()
-            for article_source in ['all'] + ARTICLE_LIST:
+            for article_source in ['all']:
                 trending_keywords = extract_trending_score(
                     es,
                     current_datetime,

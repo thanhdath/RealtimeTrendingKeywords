@@ -7,6 +7,7 @@ import json
 from elasticsearch import Elasticsearch
 import pika
 from tqdm import tqdm
+from multiprocessing import Pool
 
 THRESHOLD_TFIDF_SCORE = 0.5
 IDF = json.load(open("data/idf.json"))
@@ -31,6 +32,27 @@ N_KEYWORDS = 40
 
 ARTICLE_LIST = ['vnexpress', 'cafef']
     
+
+def extract_keyword_and_insert(article):
+    # print(article['url'])
+    if 'content_html' not in article: return [], []
+    html = article['content_html']
+    text = html2text(html)
+    text = text.strip()
+
+    if len(text) == 0:
+        return [], []
+            
+    keywords_with_scores = extract_keywords(text)
+
+    if len(keywords_with_scores) == 0:
+        return [], []
+
+    keywords, scores = list(zip(*keywords_with_scores))
+
+    # get source, url, first_topic, keywords, keyword_scores and insert to elasticsearch
+    return keywords, scores
+
 def auto_extract_keywords():
     
     while True:
@@ -65,51 +87,84 @@ def auto_extract_keywords():
     articles_db['articles'].create_index([('keywords_extracted', 1)])
     articles_db['articles'].create_index([('published_timestamp', 1)])
 
+
+    workers = 10
+
+    batch_articles = []
     for article in tqdm(
         articles_db['articles'].find({'keywords_extracted': False}, no_cursor_timeout=True).sort('published_timestamp', -1), 
         total=articles_db['articles'].count(),
         desc="processing keywords"
         ):
-        # print(article['url'])
-        if 'content_html' not in article: continue
-        html = article['content_html']
-        text = html2text(html)
-        text = text.strip()
+        batch_articles.append(article)
 
-        if len(text) == 0:
-            continue
-                
-        keywords_with_scores = extract_keywords(text)
+        if len(batch_articles) == workers:
+            pool = Pool(workers)
+            res = pool.map(extract_keyword_and_insert, batch_articles)
+            pool.close()
 
-        if len(keywords_with_scores) == 0:
-            continue
+            if len(res) > 0:
+                keywordss, scoress = list(zip(*res))
 
-        keywords, scores = list(zip(*keywords_with_scores))
+                for keywords, scores in zip(keywordss, scoress):
+                    es.index(
+                        index='article_keywords',
+                        doc_type='article_keywords',
+                        id=str(article['_id']),
+                        body={
+                            'source': article['source'],
+                            'url': article['url'],
+                            'first_topic': article['first_topic'],
+                            'keywords': keywords,
+                            'keyword_scores': scores,
+                            'published_timestamp': article['published_timestamp']
+                        }
+                    )
 
-        # get source, url, first_topic, keywords, keyword_scores and insert to elasticsearch
-        es.index(
-            index='article_keywords',
-            doc_type='article_keywords',
-            id=str(article['_id']),
-            body={
-                'source': article['source'],
-                'url': article['url'],
-                'first_topic': article['first_topic'],
-                'keywords': keywords,
-                'keyword_scores': scores,
-                'published_timestamp': article['published_timestamp']
-            }
-        )
+                    articles_db['articles'].update({
+                        '_id': article['_id']
+                    }, {
+                        '$set': {
+                            'keywords': keywords,
+                            'keyword_scores': scores,
+                            'keywords_extracted': True
+                        }
+                    })
 
-        articles_db['articles'].update({
-            '_id': article['_id']
-        }, {
-            '$set': {
-                'keywords': keywords,
-                'keyword_scores': scores,
-                'keywords_extracted': True
-            }
-        })
+            batch_articles = []
+
+    pool = Pool(workers)
+    res = pool.map(extract_keyword_and_insert, batch_articles)
+    pool.close()
+    
+    if len(res) > 0:
+        keywordss, scoress = list(zip(*res))
+
+        for keywords, scores in zip(keywordss, scoress):
+            es.index(
+                index='article_keywords',
+                doc_type='article_keywords',
+                id=str(article['_id']),
+                body={
+                    'source': article['source'],
+                    'url': article['url'],
+                    'first_topic': article['first_topic'],
+                    'keywords': keywords,
+                    'keyword_scores': scores,
+                    'published_timestamp': article['published_timestamp']
+                }
+            )
+
+            articles_db['articles'].update({
+                '_id': article['_id']
+            }, {
+                '$set': {
+                    'keywords': keywords,
+                    'keyword_scores': scores,
+                    'keywords_extracted': True
+                }
+            })
+
 
 if __name__ == '__main__':
     auto_extract_keywords()

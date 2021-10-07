@@ -136,7 +136,7 @@ def auto_extract_trending():
         extract_day = current_datetime - timedelta(days=i)
         print(f'process day {extract_day}')
 
-        for article_source in ['all'] + ARTICLE_LIST:
+        for article_source in ['all']:
             trending_keywords = extract_trending_score_day(
                 es,
                 extract_day.year, 
@@ -151,8 +151,8 @@ def auto_extract_trending():
             keywords, keywords_rank_scores = zip(*trending_keywords)
 
             es.index(
-                index='trending',
-                doc_type='trending',
+                index='trending_day',
+                doc_type='trending_day',
                 id=extract_day.timestamp(),
                 body={
                     'trending_keywords': keywords,
