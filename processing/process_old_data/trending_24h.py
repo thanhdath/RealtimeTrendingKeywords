@@ -11,17 +11,15 @@ ARTICLE_LIST = ['vnexpress', 'cafef']
 INTERVAL_EXTRACTION_TIME = 3600
 N_KEYWORDS = 100
 
-def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
+def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
     # db_keywords = mongodb['article_db']['articles']
 
-    
-    next_day = datetime(year=year, month=month, day=day) + timedelta(days=1)
     keywords_stream = []
     keyword_scores_stream = []
 
     for i in range(look_back):
-        start_day = next_day - timedelta(days=i+1)
-        end_day = next_day - timedelta(days=i)
+        start_day = current_datetime - timedelta(days=i+1)
+        end_day = current_datetime - timedelta(days=i)
 
         start_timestamp = start_day.timestamp()
         end_timestamp = end_day.timestamp()
@@ -54,12 +52,12 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
                         }
                     ]
                 }
-            }   
-            
+            }      
 
         cursor = es.search(
             index='article_keywords',
-            query=query
+            query=query,
+            size=10000
         )
         cursor = cursor['hits']['hits']
 
@@ -93,10 +91,12 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
     
     return keywords_stream, keyword_scores_stream
 
-def extract_trending_score_day(es, year, month, day, article_source, n=100):
-    keywords_stream, keyword_scores_stream = get_keywords_stream_day(es, year, month, day, article_source, look_back=1)
+def extract_trending_score_24h(es, current_datetime, article_source, n=100):
+    keywords_stream, keyword_scores_stream = get_keywords_stream_24h(es, current_datetime, article_source, look_back=1)
     day_keywords = keywords_stream[0]
     day_kscores = keyword_scores_stream[0]
+
+    n_articles = len(day_keywords)
 
     from collections import Counter
     keyword_counter = Counter()
@@ -106,7 +106,7 @@ def extract_trending_score_day(es, year, month, day, article_source, n=100):
 
     keyword_counter = sorted(keyword_counter.items(), key=lambda x: x[1], reverse=True)
     keyword_counter = keyword_counter[:n]
-    return keyword_counter
+    return keyword_counter, n_articles
 
 
 def auto_extract_trending():
@@ -131,13 +131,13 @@ def auto_extract_trending():
     stime = time.time()
 
     # current_datetime = datetime.now()
-    for i in range(24*5):
+    for i in range(24*30):
         current_datetime = datetime.now()
         current_datetime = current_datetime - timedelta(hours=i)
         print(f'process 24h - current {current_datetime}')
 
         for article_source in ['all']:
-            trending_keywords = extract_trending_score_24h(
+            trending_keywords, n_articles = extract_trending_score_24h(
                 es,
                 current_datetime,
                 article_source=article_source,
@@ -153,14 +153,15 @@ def auto_extract_trending():
             es.index(
                 index='trending_24h',
                 doc_type='trending_24h',
-                id=dt_now.timestamp(),
+                id=current_datetime.timestamp(),
                 body={
                     'trending_keywords': keywords,
                     'keywords_rank_scores': keywords_rank_scores,
-                    'time': current_datetime.strftime("%Y/%m/%d"),
+                    'time': current_datetime.strftime("%Y/%m/%d %H:%M:%S"),
                     'article_source': article_source,
-                    'extracted_timestamp': dt_now.timestamp(),
-                    'extracted_time': dt_now.strftime("%Y/%m/%d %H:%M:%S")
+                    'extracted_timestamp': current_datetime.timestamp(),
+                    'extracted_time': current_datetime.strftime("%Y/%m/%d %H:%M:%S"),
+                    'n_articles': n_articles
                 }
             )
 

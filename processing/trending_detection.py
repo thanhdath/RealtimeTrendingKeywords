@@ -138,7 +138,8 @@ def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
 
         cursor = es.search(
             index='article_keywords',
-            query=query
+            query=query,
+            size=10000
         )
         cursor = cursor['hits']['hits']
 
@@ -232,8 +233,8 @@ def auto_extract_trending():
                 keywords, keywords_rank_scores = zip(*trending_keywords)
 
                 es.index(
-                    index='trending',
-                    doc_type='trending',
+                    index='trending_24h',
+                    doc_type='trending_24h',
                     id=dt_now.timestamp(),
                     body={
                         'trending_keywords': keywords,

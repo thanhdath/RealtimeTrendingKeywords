@@ -32,7 +32,7 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
         print(err)
         time.sleep(10)
         return
-    # time.sleep(.5)
+    time.sleep(.5)
 
     try:
         title_elm = driver.find_element_by_css_selector('.title-detail')
