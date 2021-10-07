@@ -15,7 +15,8 @@ def parse_args():
     return args
 
 SOURCE = 'vnexpress'
-URL = "http://vnexpress.net"
+# URL = "http://vnexpress.net"
+URL = "http://vnexpress.vn"
 TIME_TO_REFRESH = 60
 
 def convert_string_to_local_timestamp(str_datetime):

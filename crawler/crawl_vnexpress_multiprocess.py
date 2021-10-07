@@ -19,7 +19,7 @@ logging.basicConfig(filename='log.log',
     level=logging.INFO)
 
 CHROME_DRIVER_PATH = './chromedriver.exe'
-URL = "http://vnexpress.net"
+URL = "http://vnexpress.vn"
 INTERVAL_CHECK_NEW_ARTICLES = 60
 
 MONGODB_HOST = "mongodb"
