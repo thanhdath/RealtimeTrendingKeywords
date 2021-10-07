@@ -11,6 +11,7 @@ import pika
 import json
 from bs4 import BeautifulSoup
 import logging
+from selenium.webdriver.remote.command import Command
 
 logging.basicConfig(filename='log.log',
     filemode='a',
@@ -277,8 +278,38 @@ def crawl_multiple_topics(params):
             logging.info('Unknown error: ', err)
             logging.info('Sleep for 10 seconds')
             time.sleep(10)
+            try:
+                driver_status = driver.execute(Command.STATUS)
+                if not driver_status['value']['ready']:
+                    print("driver_status un ready : ", driver_status)
+                    try:
+                        driver.close()
+                        driver.quit()
+                        print("driver successfully closed.")
+                    except Exception as err:
+                        print("driver already closed.")
+                    print("recreate drive ")
+                    driver = webdriver.Remote(
+                        SELENIUM_HOST,
+                        options=chrome_options
+                    )
+                    print("recreate drive successfully")
 
-    driver.close()
+            except  Exception as err:
+                print("driver_status error : ",err)
+                try:
+                    driver.close()
+                    driver.quit()
+                    print("driver successfully closed.")
+                except Exception as err:
+                    print("driver already closed.")
+                print("recreate drive ")
+                driver = webdriver.Remote(
+                    SELENIUM_HOST,
+                    options=chrome_options
+                )
+                print("recreate drive successfully")
+
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
