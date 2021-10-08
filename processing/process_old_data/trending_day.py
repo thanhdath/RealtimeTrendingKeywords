@@ -139,11 +139,11 @@ def extract_trending_score_day(es, year, month, day, article_source, n=100):
     # import pdb; pdb.set_trace()
     noun_trending_score = {}
     for noun in candidate_nouns:
-        noun_trending_score[noun] = noun_time_score[noun]  * noun_freq_score[noun] 
+        noun_trending_score[noun] = (1+noun_time_score[noun])  * noun_freq_score[noun] 
 
     noun_trending_score = sorted(noun_trending_score.items(), key=lambda x: x[1], reverse=True)
     noun_trending_score = noun_trending_score[:n]
-    # print(noun_trending_score[:20])
+    print(noun_trending_score[:20])
     return noun_trending_score, n_articles
 
 def get_trending_score(x_last, prev_xs, w1=3., w2=2., w3=1., w4=1.):
@@ -196,7 +196,7 @@ def auto_extract_trending():
     stime = time.time()
 
     # current_datetime = datetime.now()
-    for i in range(30*12):
+    for i in range(7):
         current_datetime = datetime.today().date()
         extract_day = current_datetime - timedelta(days=i)
         print(f'process day {extract_day}')

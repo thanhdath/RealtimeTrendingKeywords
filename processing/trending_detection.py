@@ -18,17 +18,15 @@ FILTERED_KEYWORDS = ['descriptions', 'selected', 'audio track', 'cancel',
     'escape', 'beginning', 'transparent', 'cyan', 'opaque', 'window', 'dialog', 'magenta', 'blue',
     'green', 'color', 'white', 'transparency', 'yellow', 'player', 'thời lượng']
 
-def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
+def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
     # db_keywords = mongodb['article_db']['articles']
 
-    
-    next_day = datetime(year=year, month=month, day=day) + timedelta(days=1)
     keywords_stream = []
     keyword_scores_stream = []
 
     for i in range(look_back):
-        start_day = next_day - timedelta(days=i+1)
-        end_day = next_day - timedelta(days=i)
+        start_day = current_datetime - timedelta(days=i+1)
+        end_day = current_datetime - timedelta(days=i)
 
         start_timestamp = start_day.timestamp()
         end_timestamp = end_day.timestamp()
@@ -61,8 +59,7 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
                         }
                     ]
                 }
-            }   
-            
+            }      
 
         cursor = es.search(
             index='article_keywords',
@@ -198,8 +195,8 @@ def auto_extract_trending():
 
     # store data in elasticsearch
     try:
-        # es = Elasticsearch([{'host': 'elasticsearch'}])
-        es = Elasticsearch()
+        es = Elasticsearch([{'host': 'elasticsearch'}])
+        # es = Elasticsearch()
     except Exception as err:
         print(f'Error connect db', err)
         print('Try again in 5 seconds')
