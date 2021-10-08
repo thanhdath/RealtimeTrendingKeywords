@@ -3,6 +3,10 @@ from process_html import html2text
 import time
 from datetime import date, datetime, timedelta, timezone
 from elasticsearch import Elasticsearch
+import numpy as np
+from scipy.signal import savgol_filter
+from collections import Counter
+import json
 
 STOPWORDS = open('data/Stopwords/stopwords_vi_without.txt', encoding='utf8').read().splitlines()
  
@@ -10,6 +14,13 @@ ARTICLE_LIST = ['vnexpress', 'cafef']
 
 INTERVAL_EXTRACTION_TIME = 3600
 N_KEYWORDS = 100
+IDF = json.load(open("data/idf.json"))
+MAX_IDF = max(IDF.values())
+IDF = {k: v/MAX_IDF for k, v in IDF.items()}
+
+FILTERED_KEYWORDS = ['descriptions', 'selected', 'audio track', 'cancel',
+    'escape', 'beginning', 'transparent', 'cyan', 'opaque', 'window', 'dialog', 'magenta', 'blue',
+    'green', 'color', 'white', 'transparency', 'yellow', 'player', 'thời lượng']
 
 def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
     # db_keywords = mongodb['article_db']['articles']
@@ -55,8 +66,7 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
                     ]
                 }
             }   
-            
-        print(query)
+        
 
         cursor = es.search(
             index='article_keywords',
@@ -96,22 +106,73 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
     return keywords_stream, keyword_scores_stream
 
 def extract_trending_score_day(es, year, month, day, article_source, n=100):
-    keywords_stream, keyword_scores_stream = get_keywords_stream_day(es, year, month, day, article_source, look_back=1)
-    day_keywords = keywords_stream[0]
-    day_kscores = keyword_scores_stream[0]
+    keywords_stream, keyword_scores_stream = get_keywords_stream_day(
+        es, year, month, day, article_source, look_back=7)
+    keywords_stream = keywords_stream[::-1]
+    keyword_scores_stream = keyword_scores_stream[::-1]
 
-    n_articles = len(day_keywords)
+    n_articles = len(keywords_stream[-1])
 
-    from collections import Counter
-    keyword_counter = Counter()
-    
-    for doc_keywords in day_keywords:
-        keyword_counter.update(doc_keywords)
+    noun_freq_score = Counter()
+    for post_nouns, kw_scores in zip(keywords_stream[-1], keyword_scores_stream[-1]):
+        noun2score = {n: s for n, s in zip(post_nouns, kw_scores)}
+        noun_freq_score.update(noun2score)
+    n_total = len(keywords_stream[-1])
+    noun_freq_score = {k: np.log(1+v/n_total) for k, v in noun_freq_score.items()}
+    candidate_nouns = list(noun_freq_score.keys())
+    candidate_nouns = [x for x in candidate_nouns if len(x) > 1]
+    candidate_nouns = list(set(candidate_nouns) - set(FILTERED_KEYWORDS))
 
-    keyword_counter = sorted(keyword_counter.items(), key=lambda x: x[1], reverse=True)
-    keyword_counter = keyword_counter[:n]
-    return keyword_counter, n_articles
+    noun_freqs_stream = []
+    for nouns_list, scores_list in zip(keywords_stream, keyword_scores_stream):
+        counter = Counter()
+        for nouns, scores in zip(nouns_list, scores_list):
+            noun2score = {n: s for n, s in zip(nouns, scores)}
+            counter.update(noun2score)
+        n_total = len(nouns_list)
+        counter = {k: np.log(1+v/n_total) for k, v in counter.items()}
+        noun_freqs_stream.append(counter)
 
+    noun_time_score = compute_trending_score(candidate_nouns, noun_freqs_stream)
+    # noun_time_score = sorted(noun_time_score.items(), key=lambda x: x[1], reverse=True)
+
+    # import pdb; pdb.set_trace()
+    noun_trending_score = {}
+    for noun in candidate_nouns:
+        noun_trending_score[noun] = noun_time_score[noun]  * noun_freq_score[noun] 
+
+    noun_trending_score = sorted(noun_trending_score.items(), key=lambda x: x[1], reverse=True)
+    noun_trending_score = noun_trending_score[:n]
+    # print(noun_trending_score[:20])
+    return noun_trending_score, n_articles
+
+def get_trending_score(x_last, prev_xs, w1=3., w2=2., w3=1., w4=1.):
+    if len(prev_xs) > 7: prev_xs = prev_xs[-7:]
+    extended_prev_xs = np.zeros(7)
+    if len(prev_xs) > 0:
+        extended_prev_xs[-len(prev_xs):] = prev_xs
+    score = w1*max((x_last - extended_prev_xs[-1]), 0)
+    score += w2*max((x_last - extended_prev_xs[-3:].mean()), 0)
+    score += w3*max((x_last-extended_prev_xs.mean()), 0)
+    # score += w4*max((x_last-extended_prev_xs.mean()),0)
+    return score
+
+def compute_trending_score(candidate_nouns, noun_freqs_stream):
+    noun_trending_score = {}
+    for noun in candidate_nouns:
+        xs = [N.get(noun, 0) for N in noun_freqs_stream]
+        # xs = savgol_filter(xs, 7, 3)
+
+        if noun_freqs_stream[-1].get(noun, 0) == 0:
+            xs[-1] = 0
+
+        ys = []
+
+        cur_xs = xs[-1]
+        prev_xs = xs[:-1]
+        y = get_trending_score(cur_xs, prev_xs)
+        noun_trending_score[noun] = y
+    return noun_trending_score
 
 def auto_extract_trending():
     # mongodb = MongoClient()

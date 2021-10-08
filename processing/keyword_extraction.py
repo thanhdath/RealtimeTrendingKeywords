@@ -6,6 +6,7 @@ import time
 import json
 from elasticsearch import Elasticsearch
 import pika
+from datetime import datetime
 
 THRESHOLD_TFIDF_SCORE = 0.5
 IDF = json.load(open("data/idf.json"))
@@ -73,6 +74,7 @@ def callback(es, body):
                 'keywords': keywords,
                 'keyword_scores': scores,
                 'published_time': article['published_time'],
+                'published_time_dt': datetime.fromtimestamp(article['published_timestamp']),
                 'published_timestamp': article['published_timestamp']
             }
         )

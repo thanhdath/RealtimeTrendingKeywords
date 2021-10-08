@@ -70,7 +70,7 @@ services:
     hostname: crawler
     volumes:
       - ./crawler:/code
-    command: python crawl_vnexpress_multiprocess.py --workers 2 --n-page-lookback 20
+    command: python crawl_vnexpress_multiprocess.py --workers 2 --n-page-lookback 3
     networks:
       - mongo_net
     depends_on:
