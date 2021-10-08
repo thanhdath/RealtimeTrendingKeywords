@@ -1,0 +1,324 @@
+11:18:07,816 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:18:07,816 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:18:20,361 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:18:20,361 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:18:50,462 root INFO ['kinh-doanh']
+11:19:52,939 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:19:52,939 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:20:16,798 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:20:16,798 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:20:16,820 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:20:16,820 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:20:16,821 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=14, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53244), raddr=('127.0.0.1', 5672)>
+11:20:16,821 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53246), raddr=('127.0.0.1', 5672)>
+11:20:16,821 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb6128>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb6128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:20:16,822 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb62e8>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb62e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:20:16,823 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb6128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,823 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb6128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,823 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb6128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,823 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb62e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,823 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb62e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,824 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb62e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,824 pika.adapters.blocking_connection INFO Created channel=1
+11:20:16,824 pika.adapters.blocking_connection INFO Created channel=1
+11:20:16,830 root INFO ['kinh-doanh']
+11:20:16,842 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:20:16,842 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=20, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53266), raddr=('127.0.0.1', 5672)>
+11:20:16,842 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb88d0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb88d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:20:16,844 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb88d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,844 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb88d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,844 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1918cb88d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:16,844 pika.adapters.blocking_connection INFO Created channel=1
+11:20:25,25 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:20:25,25 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:20:25,41 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:20:25,41 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:20:25,42 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=16, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53300), raddr=('127.0.0.1', 5672)>
+11:20:25,42 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=14, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53298), raddr=('127.0.0.1', 5672)>
+11:20:25,42 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c278>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:20:25,42 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c0b8>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c0b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:20:25,43 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:25,44 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c0b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:25,44 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:25,44 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c0b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:25,44 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:25,44 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fe94703c0b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:25,44 pika.adapters.blocking_connection INFO Created channel=1
+11:20:25,44 pika.adapters.blocking_connection INFO Created channel=1
+11:20:33,399 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:20:33,399 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:20:33,415 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:20:33,415 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:20:33,415 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=16, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53420), raddr=('127.0.0.1', 5672)>
+11:20:33,415 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53422), raddr=('127.0.0.1', 5672)>
+11:20:33,416 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa6278>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa6278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:20:33,416 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa60b8>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa60b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:20:33,418 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa6278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:33,418 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa60b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:33,418 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa6278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:33,418 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa60b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:33,418 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa6278> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:33,418 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f014caa60b8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:20:33,418 pika.adapters.blocking_connection INFO Created channel=1
+11:20:33,419 pika.adapters.blocking_connection INFO Created channel=1
+11:21:06,314 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:21:06,314 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:21:06,330 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:21:06,331 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:21:06,331 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53644), raddr=('127.0.0.1', 5672)>
+11:21:06,331 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=14, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 53648), raddr=('127.0.0.1', 5672)>
+11:21:06,331 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df2e8>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:21:06,332 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df128>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:21:06,333 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:21:06,333 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:21:06,333 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:21:06,333 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:21:06,333 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:21:06,333 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fea256df128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:21:06,333 pika.adapters.blocking_connection INFO Created channel=1
+11:21:06,334 pika.adapters.blocking_connection INFO Created channel=1
+11:21:11,35 root INFO Sleep for 10 seconds
+11:39:52,889 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:39:52,889 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:39:52,904 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:39:52,905 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:39:52,905 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=14, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54106), raddr=('127.0.0.1', 5672)>
+11:39:52,905 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=16, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54108), raddr=('127.0.0.1', 5672)>
+11:39:52,906 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f940>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f940> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:39:52,906 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f7f0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f7f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:39:52,909 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f7f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:52,910 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f7f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:52,910 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f7f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:52,910 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f940> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:52,910 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f940> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:52,910 pika.adapters.blocking_connection INFO Created channel=1
+11:39:52,910 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae014f940> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:52,911 pika.adapters.blocking_connection INFO Created channel=1
+11:39:57,302 root INFO ['kinh-doanh']
+11:39:57,329 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:39:57,330 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54450), raddr=('127.0.0.1', 5672)>
+11:39:57,331 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae0154128>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae0154128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:39:57,333 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae0154128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:57,333 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae0154128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:57,333 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feae0154128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:39:57,334 pika.adapters.blocking_connection INFO Created channel=1
+11:40:02,460 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe', 'tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:40:02,460 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao', 'phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:40:02,483 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:40:02,483 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:40:02,483 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54484), raddr=('127.0.0.1', 5672)>
+11:40:02,484 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=16, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54486), raddr=('127.0.0.1', 5672)>
+11:40:02,484 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe2e8>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:40:02,484 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe518>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe518> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:40:02,485 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:02,486 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:02,486 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe518> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:02,486 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe2e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:02,486 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe518> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:02,486 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fb5df4fe518> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:02,486 pika.adapters.blocking_connection INFO Created channel=1
+11:40:02,486 pika.adapters.blocking_connection INFO Created channel=1
+11:40:31,223 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao']
+11:40:31,223 root INFO ['tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:40:31,223 root INFO ['phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:40:31,223 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe']
+11:40:31,241 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:40:31,241 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:40:31,242 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=17, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54874), raddr=('127.0.0.1', 5672)>
+11:40:31,242 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54876), raddr=('127.0.0.1', 5672)>
+11:40:31,242 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de23c8>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de23c8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:40:31,242 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de21d0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de21d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:40:31,244 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de23c8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,244 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de23c8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,244 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de23c8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,244 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de21d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,244 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de21d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,245 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de21d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,245 pika.adapters.blocking_connection INFO Created channel=1
+11:40:31,245 pika.adapters.blocking_connection INFO Created channel=1
+11:40:31,247 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:40:31,247 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=16, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54886), raddr=('127.0.0.1', 5672)>
+11:40:31,248 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:40:31,248 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2320>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2320> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:40:31,248 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 54892), raddr=('127.0.0.1', 5672)>
+11:40:31,249 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2160>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2160> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:40:31,250 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2320> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,250 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2320> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,250 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2320> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,251 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2160> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,251 pika.adapters.blocking_connection INFO Created channel=1
+11:40:31,251 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2160> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,251 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3032de2160> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:40:31,251 pika.adapters.blocking_connection INFO Created channel=1
+11:44:15,950 root INFO sleeping for 60s
+11:45:27,962 root INFO sleeping for 60s
+11:46:35,762 root INFO sleeping for 60s
+11:56:08,445 root INFO ['thoi-su', 'the-gioi', 'giai-tri', 'the-thao']
+11:56:08,445 root INFO ['phap-luat', 'giao-duc', 'suc-khoe', 'doi-song']
+11:56:08,445 root INFO ['du-lich', 'khoa-hoc', 'so-hoa', 'xe']
+11:56:08,445 root INFO ['tam-su', 'hai', 'y-kien', 'goc-nhin']
+11:56:08,464 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:56:08,464 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:56:08,464 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=17, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 57562), raddr=('127.0.0.1', 5672)>
+11:56:08,465 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=15, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 57566), raddr=('127.0.0.1', 5672)>
+11:56:08,465 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1390>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1390> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:56:08,465 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1198>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1198> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:56:08,467 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1390> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,467 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1390> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,467 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1390> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,467 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1198> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,467 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1198> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,467 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1198> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,467 pika.adapters.blocking_connection INFO Created channel=1
+11:56:08,468 pika.adapters.blocking_connection INFO Created channel=1
+11:56:08,471 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:56:08,471 pika.adapters.utils.connection_workflow INFO Pika version 1.2.0 connecting to ('127.0.0.1', 5672)
+11:56:08,471 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=17, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 57578), raddr=('127.0.0.1', 5672)>
+11:56:08,471 pika.adapters.utils.io_services_utils INFO Socket connected: <socket.socket fd=14, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 57582), raddr=('127.0.0.1', 5672)>
+11:56:08,472 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af12e8>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af12e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:56:08,472 pika.adapters.utils.connection_workflow INFO Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1128>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+11:56:08,474 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,474 pika.adapters.utils.connection_workflow INFO AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af12e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,474 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,474 pika.adapters.utils.connection_workflow INFO AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af12e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,474 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af1128> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,474 pika.adapters.blocking_connection INFO Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fec52af12e8> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+11:56:08,474 pika.adapters.blocking_connection INFO Created channel=1
+11:56:08,474 pika.adapters.blocking_connection INFO Created channel=1
+11:56:20,996 root INFO sleeping for 60s
+11:57:29,158 root INFO sleeping for 60s
+11:57:39,884 root INFO sleeping for 60s
+11:58:38,915 root INFO sleeping for 60s
+11:58:47,533 root INFO sleeping for 60s
+11:58:53,142 root INFO sleeping for 60s
+11:59:45,681 root INFO sleeping for 60s
+11:59:53,393 root INFO sleeping for 60s
+12:00:00,613 root INFO sleeping for 60s
+12:00:52,241 root INFO sleeping for 60s
+12:01:00,597 root INFO sleeping for 60s
+12:01:06,317 root INFO sleeping for 60s
+12:01:28,955 root INFO sleeping for 60s
+12:01:58,648 root INFO sleeping for 60s
+12:02:08,309 root INFO sleeping for 60s
+12:02:11,581 root INFO sleeping for 60s
+12:02:34,420 root INFO sleeping for 60s
+12:03:04,549 root INFO sleeping for 60s
+12:03:14,5 root INFO sleeping for 60s
+12:03:16,683 root INFO sleeping for 60s
+12:03:39,973 root INFO sleeping for 60s
+12:04:10,667 root INFO sleeping for 60s
+12:04:19,535 root INFO sleeping for 60s
+12:04:22,385 root INFO sleeping for 60s
+12:04:45,484 root INFO sleeping for 60s
+12:05:16,841 root INFO sleeping for 60s
+12:05:25,455 root INFO sleeping for 60s
+12:05:27,839 root INFO sleeping for 60s
+12:05:52,871 root INFO sleeping for 60s
+12:06:23,42 root INFO sleeping for 60s
+12:06:31,169 root INFO sleeping for 60s
+12:06:33,257 root INFO sleeping for 60s
+12:06:58,356 root INFO sleeping for 60s
+12:07:29,348 root INFO sleeping for 60s
+12:07:38,105 root INFO sleeping for 60s
+12:07:38,623 root INFO sleeping for 60s
+12:08:04,167 root INFO sleeping for 60s
+12:08:35,452 root INFO sleeping for 60s
+12:08:43,727 root INFO sleeping for 60s
+12:08:43,961 root INFO sleeping for 60s
+12:09:09,990 root INFO sleeping for 60s
+12:09:42,156 root INFO sleeping for 60s
+12:09:49,666 root INFO sleeping for 60s
+12:09:49,952 root INFO sleeping for 60s
+12:10:16,156 root INFO sleeping for 60s
+12:10:48,2 root INFO sleeping for 60s
+12:10:54,856 root INFO sleeping for 60s
+12:10:55,380 root INFO sleeping for 60s
+12:11:22,183 root INFO sleeping for 60s
+12:11:53,943 root INFO sleeping for 60s
+12:12:00,547 root INFO sleeping for 60s
+12:12:01,267 root INFO sleeping for 60s
+12:12:27,660 root INFO sleeping for 60s
+12:13:01,528 root INFO sleeping for 60s
+12:13:07,58 root INFO sleeping for 60s
+12:13:08,135 root INFO sleeping for 60s
+12:13:33,33 root INFO sleeping for 60s
+12:14:07,339 root INFO sleeping for 60s
+12:14:12,362 root INFO sleeping for 60s
+12:14:13,882 root INFO sleeping for 60s
+12:14:39,731 root INFO sleeping for 60s
+12:15:13,140 root INFO sleeping for 60s
+12:15:17,745 root INFO sleeping for 60s
+12:15:19,730 root INFO sleeping for 60s
+12:15:45,391 root INFO sleeping for 60s
+12:16:18,563 root INFO sleeping for 60s
+12:16:23,250 root INFO sleeping for 60s
+12:16:25,721 root INFO sleeping for 60s
+12:16:50,398 root INFO sleeping for 60s
+12:17:24,878 root INFO sleeping for 60s
+12:17:28,163 root INFO sleeping for 60s
+12:17:31,677 root INFO sleeping for 60s
+12:17:55,591 root INFO sleeping for 60s
+12:18:30,765 root INFO sleeping for 60s
+12:18:33,695 root INFO sleeping for 60s
+12:18:37,444 root INFO sleeping for 60s
+12:19:01,57 root INFO sleeping for 60s
+12:19:36,661 root INFO sleeping for 60s
+12:20:02,764 root INFO sleeping for 60s
+12:20:04,153 root INFO sleeping for 60s
+12:20:06,232 root INFO sleeping for 60s
+12:20:42,484 root INFO sleeping for 60s
+12:21:09,370 root INFO sleeping for 60s
+12:21:10,192 root INFO sleeping for 60s
+12:21:12,42 root INFO sleeping for 60s
+12:21:47,988 root INFO sleeping for 60s
+12:22:14,476 root INFO sleeping for 60s
+12:22:16,446 root INFO sleeping for 60s
+12:22:17,891 root INFO sleeping for 60s
+12:22:53,784 root INFO sleeping for 60s
+12:23:19,490 root INFO sleeping for 60s
+12:23:22,590 root INFO sleeping for 60s
+12:23:25,72 root INFO sleeping for 60s
+12:23:59,899 root INFO sleeping for 60s
+12:24:24,517 root INFO sleeping for 60s
+12:24:28,406 root INFO sleeping for 60s
+12:24:30,857 root INFO sleeping for 60s
+12:25:05,713 root INFO sleeping for 60s
+12:25:29,151 root INFO sleeping for 60s
+12:25:34,396 root INFO sleeping for 60s
+12:25:36,893 root INFO sleeping for 60s
+12:26:11,402 root INFO sleeping for 60s
+12:26:34,823 root INFO sleeping for 60s
+12:26:40,343 root INFO sleeping for 60s
+12:26:43,712 root INFO sleeping for 60s
+12:27:17,356 root INFO sleeping for 60s
+12:27:39,912 root INFO sleeping for 60s
+12:27:45,966 root INFO sleeping for 60s
+12:27:49,425 root INFO sleeping for 60s
+12:28:23,417 root INFO sleeping for 60s
+12:28:44,859 root INFO sleeping for 60s
+12:28:51,441 root INFO sleeping for 60s
+12:28:54,934 root INFO sleeping for 60s
+12:29:29,141 root INFO sleeping for 60s
+12:29:50,20 root INFO sleeping for 60s
+12:29:57,104 root INFO sleeping for 60s
+12:30:00,460 root INFO sleeping for 60s
+12:30:34,383 root INFO sleeping for 60s
+12:30:55,615 root INFO sleeping for 60s
+12:31:03,128 root INFO sleeping for 60s
+12:31:05,932 root INFO sleeping for 60s
+12:31:40,454 root INFO sleeping for 60s
+12:32:00,454 root INFO sleeping for 60s
+12:32:09,179 root INFO sleeping for 60s
+12:32:11,388 root INFO sleeping for 60s
+12:32:46,178 root INFO sleeping for 60s
+12:33:05,341 root INFO sleeping for 60s
+12:33:14,549 root INFO sleeping for 60s
+12:33:17,455 root INFO sleeping for 60s
+12:33:51,990 root INFO sleeping for 60s
+12:34:10,247 root INFO sleeping for 60s
+12:34:19,700 root INFO sleeping for 60s
+12:34:23,732 root INFO sleeping for 60s
+12:34:57,973 root INFO sleeping for 60s
+12:35:15,480 root INFO sleeping for 60s
+12:35:25,338 root INFO sleeping for 60s
+12:35:29,983 root INFO sleeping for 60s

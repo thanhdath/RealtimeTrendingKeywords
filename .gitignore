@@ -4,3 +4,4 @@ data/
 dump/
 *.gz
 crawler/chromedriver
+.fuse_hidden*

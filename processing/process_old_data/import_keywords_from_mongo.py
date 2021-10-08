@@ -5,9 +5,9 @@ from process_html import html2text
 import time
 import json
 from elasticsearch import Elasticsearch
-import pika
 from tqdm import tqdm
 from multiprocessing import Pool
+from datetime import datetime
 
 THRESHOLD_TFIDF_SCORE = 0.5
 IDF = json.load(open("data/idf.json"))
@@ -87,7 +87,9 @@ def auto_extract_keywords():
 
     batch_articles = []
     for article in tqdm(
-        articles_db['articles'].find({'keywords_extracted': True}, no_cursor_timeout=True).sort('published_timestamp', -1), 
+        articles_db['articles'].find({
+            'keywords_extracted': True
+        }, no_cursor_timeout=True).sort('published_timestamp', -1), 
         total=articles_db['articles'].count(),
         desc="importing keywords to elasticsearch"
         ):
@@ -120,22 +122,27 @@ def auto_extract_keywords():
         idx_keep = [i for i, k in enumerate(keywords) if len(k.strip()) > 0]
         keywords = [keywords[i] for i in idx_keep]
         scores = [scores[i] for i in idx_keep]
-            
-        es.index(
-            index='article_keywords',
-            doc_type='article_keywords',
-            id=str(article['_id']),
-            body={
-                'source': article['source'],
-                'url': article['url'],
-                'first_topic': article['first_topic'],
-                'keywords': keywords,
-                'keyword_scores': scores,
-                'published_time': article['published_time'],
-                'published_timestamp': article['published_timestamp']
-            }
-        )
+    
+        if len(keywords) > 0 and article['published_timestamp'] is not None:
+            es.index(
+                index='article_keywords',
+                doc_type='article_keywords',
+                id=str(article['_id']),
+                body={
+                    'source': article['source'],
+                    'url': article['url'],
+                    'first_topic': article['first_topic'],
+                    'keywords': keywords,
+                    'keyword_scores': scores,
+                    'published_time': datetime.fromtimestamp(article['published_timestamp']),
+                    'published_timestamp': article['published_timestamp'],
+                    'published_time_dt': datetime.fromtimestamp(article['published_timestamp'])
+                }
+            )
 
 
 if __name__ == '__main__':
     auto_extract_keywords()
+
+
+

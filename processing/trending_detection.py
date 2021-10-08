@@ -3,6 +3,9 @@ from process_html import html2text
 import time
 from datetime import date, datetime, timedelta, timezone
 from elasticsearch import Elasticsearch
+import numpy as np
+from scipy.signal import savgol_filter
+from collections import Counter
 
 STOPWORDS = open('data/Stopwords/stopwords_vi_without.txt', encoding='utf8').read().splitlines()
  
@@ -59,7 +62,8 @@ def get_keywords_stream_day(es, year, month, day, article_source, look_back=14):
 
         cursor = es.search(
             index='article_keywords',
-            query=query
+            query=query,
+            size=10000
         )
         cursor = cursor['hits']['hits']
 
@@ -173,20 +177,46 @@ def get_keywords_stream_24h(es, current_datetime, article_source, look_back=14):
     
     return keywords_stream, keyword_scores_stream
     
+def get_trending_score(x_last, prev_xs, w1=3., w2=2., w3=1., w4=1.):
+    if len(prev_xs) > 30: prev_xs = prev_xs[-30:]
+    extended_prev_xs = np.zeros(30)
+    if len(prev_xs) > 0:
+        extended_prev_xs[-len(prev_xs)] = prev_xs
+    score = w1*max((x_last - extended_prev_xs[-1]), 0)
+    score += w2*max((x_last - extended_prev_xs[-3:].mean()), 0)
+    score += w3*max((x_last-extended_prev_xs[-7:].mean()), 0)
+    score += w4*max((x_last-extended_prev_xs.mean()),0)
+    return score
+
 def extract_trending_score(es, current_datetime, article_source, n=100):
-    keywords_stream, keyword_scores_stream = get_keywords_stream_24h(es, current_datetime, article_source, look_back=1)
-    day_keywords = keywords_stream[0]
-    day_kscores = keyword_scores_stream[0]
+    keywords_stream, keyword_scores_stream = get_keywords_stream_24h(es, current_datetime, article_source, look_back=7)
+    keywords_stream = keywords_stream[::-1]
+    keyword_scores_stream = keyword_scores_stream[::-1]
 
-    from collections import Counter
-    keyword_counter = Counter()
-    
-    for doc_keywords in day_keywords:
-        keyword_counter.update(doc_keywords)
+    candidate_nouns = keywords_stream[0]
+    noun_freqs_stream = [Counter(nouns) for nouns in keywords_stream]
 
-    keyword_counter = sorted(keyword_counter.items(), key=lambda x: x[1], reverse=True)
-    keyword_counter = keyword_counter[:n]
-    return keyword_counter
+    noun_trending_score = compute_trending_score(candidate_nouns, noun_freqs_stream)
+    noun_trending_score = sorted(noun_trending_score.items(), key=lambda x: x[1], reverse=True)
+
+    return noun_trending_score
+
+def compute_trending_score(candidate_nouns, noun_freqs_stream):
+    noun_trending_score = {}
+    for noun in candidate_nouns:
+        xs = [N.get(noun, 0) for N in noun_freqs_stream]
+        xs = savgol_filter(xs, 7, 3)
+
+        if noun_freqs_stream[-1].get(noun, 0) == 0:
+            xs[-1] = 0
+
+        ys = []
+
+        cur_xs = xs[-1]
+        prev_xs = xs[:-1]
+        y = get_trending_score(cur_xs, prev_xs)
+        noun_trending_score[noun] = y
+    return noun_trending_score
 
 def auto_extract_trending():
     # mongodb = MongoClient()
@@ -252,9 +282,9 @@ def auto_extract_trending():
 
             time.sleep(INTERVAL_EXTRACTION_TIME)
         except Exception as err:
-            print(f'Error execute keyword extraction', err)
+            print(f'Error execute trending detection', err)
             print('Try again in 10 seconds')
-            time.sleep(10)
+            time.sleep(INTERVAL_EXTRACTION_TIME/2)
 
 
 if __name__ == '__main__':

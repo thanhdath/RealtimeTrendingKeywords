@@ -19,15 +19,15 @@ logging.basicConfig(filename='log.log',
     datefmt='%H:%M:%S',
     level=logging.INFO)
 
-CHROME_DRIVER_PATH = './chromedriver.exe'
-URL = "http://vnexpress.vn"
+CHROME_DRIVER_PATH = './chromedriver'
+URL = "http://vnexpress.net"
 INTERVAL_CHECK_NEW_ARTICLES = 60
 
 MONGODB_HOST = "mongodb"
 RABBIT_MQ_HOST = "rabbitmq"
 SELENIUM_HOST = "http://selenium:4444/wd/hub"
 
-# MONGODB_HOST = "localhost:27017"
+# MONGODB_HOST = "localhost:27018"
 # RABBIT_MQ_HOST = "localhost"
 # SELENIUM_HOST = "http://localhost:4444/wd/hub"
 
@@ -133,12 +133,14 @@ def crawl_article(db, driver: webdriver.Chrome, url: str):
     # print(article_record)
     data_id = None
     if article_record is None:
+        # print(data)
         _id = db.insert_one(data)
         data_id = _id.inserted_id
     else:
         db.update({'url': url}, {'$set': data})
         data_id = str(article_record['_id'])
     data['_id'] = data_id
+    # print({k: v for k, v in data.items() if v!='content_html'})
     return data
 
 def crawl_newest_urls(db, driver, topic, max_page=4, threshold_exists_url=8):
