@@ -133,7 +133,7 @@ def extract_trending_score_24h(es, current_datetime, article_source, n=100):
     # import pdb; pdb.set_trace()
     noun_trending_score = {}
     for noun in candidate_nouns:
-        noun_trending_score[noun] = noun_time_score[noun]  * noun_freq_score[noun] 
+        noun_trending_score[noun] = (1+noun_time_score[noun]) * noun_freq_score[noun] 
 
     noun_trending_score = sorted(noun_trending_score.items(), key=lambda x: x[1], reverse=True)
     noun_trending_score = noun_trending_score[:n]
@@ -191,7 +191,7 @@ def auto_extract_trending():
     stime = time.time()
 
     # current_datetime = datetime.now()
-    for i in range(24*30):
+    for i in range(7):
         current_datetime = datetime.now()
         current_datetime = current_datetime - timedelta(hours=i)
         print(f'process 24h - current {current_datetime}')
