@@ -208,7 +208,7 @@ def auto_extract_trending():
 
         current_datetime = datetime.now()
         for article_source in ['all']:
-            trending_keywords = extract_trending_score_24h(
+            trending_keywords, n_articles = extract_trending_score_24h(
                 es,
                 current_datetime,
                 # today.year, 
@@ -238,7 +238,8 @@ def auto_extract_trending():
                     'time': current_datetime.strftime("%Y/%m/%d"),
                     'article_source': article_source,
                     'extracted_timestamp': dt_now.timestamp(),
-                    'extracted_time': dt_now.strftime("%Y/%m/%d %H:%M:%S")
+                    'extracted_time': dt_now.strftime("%Y/%m/%d %H:%M:%S"),
+                    'n_articles': n_articles
                 }
             )
 
