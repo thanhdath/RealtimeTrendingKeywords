@@ -12,12 +12,18 @@ THRESHOLD_TFIDF_SCORE = 0.5
 IDF = json.load(open("data/idf.json"))
 MAX_IDF = max(IDF.values())
 
+FILTERED_KEYWORDS = ['descriptions', 'selected', 'audio track', 'cancel',
+    'escape', 'beginning', 'transparent', 'cyan', 'opaque', 'window', 'dialog', 'magenta', 'blue',
+    'green', 'color', 'white', 'transparency', 'yellow', 'player', 'thời lượng']
+
 def extract_keywords(text, n=10):
     # text = clean_str(text)
     tfs = compute_tf(text)
     tfidfs = {}
     for word, tf in tfs.items():
         if word in stopwords or is_number(word) or len(word.strip()) == 0: 
+            continue
+        if word in FILTERED_KEYWORDS:
             continue
         tfidf = tf*IDF.get(word, MAX_IDF)
         tfidfs[word] = tfidf

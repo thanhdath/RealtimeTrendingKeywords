@@ -191,7 +191,7 @@ def auto_extract_trending():
     stime = time.time()
 
     # current_datetime = datetime.now()
-    for i in range(7):
+    for i in range(24*80, 24*90):
         current_datetime = datetime.now()
         current_datetime = current_datetime - timedelta(hours=i)
         print(f'process 24h - current {current_datetime}')
