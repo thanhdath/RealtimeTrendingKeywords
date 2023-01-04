@@ -1,27 +1,11 @@
-# BI
+# Real-time Trending Keywords Detection.
 
+### Architecture
+- A crawler system. Crawl articles from various sources and transfer data to RabbitMQ.
+- A processing system received data from RabbitMQ and extract keywords & trending keywords.
+- A visualization system including Kibana.
 
-# Docker 
-
+### Run
 ```
-docker-compose up -d
+docker-compose up
 ```
-
-
-### Mongodb
-
-```
-DATABASE_USERNAME = "admin"
-DATABASE_PASSWORD = "admin"
-```
-
-
-### Selenium 
-
-1. If run on machine 
-
-Check version of google chrome . -->
-Download chromedriver in [this](https://sites.google.com/chromium.org/driver/downloads)
-
-
-2. If run on doker 
